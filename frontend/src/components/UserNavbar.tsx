@@ -17,7 +17,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
-      <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+      <div className="container mx-auto px-30 py-10 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
           <img
@@ -33,37 +33,20 @@ const Navbar = () => {
             className="text-white hover:text-[#FBB507] transition-colors font-medium cursor-pointer"
             onClick={() => scrollToSection("home")}
           >
-            Home
+            Colleges
           </span>
           <span
             className="text-white hover:text-[#FBB507] transition-colors font-medium cursor-pointer"
             onClick={() => scrollToSection("features")}
           >
-            Features
-          </span>
-          <span
-            className="text-white hover:text-[#FBB507] transition-colors font-medium cursor-pointer"
-            onClick={() => scrollToSection("process")}
-          >
-            Process
-          </span>
-          <span
-            className="text-white hover:text-[#FBB507] transition-colors font-medium cursor-pointer"
-            onClick={() => scrollToSection("reviews")}
-          >
-            Reviews
-          </span>
-          <span
-            className="text-white hover:text-[#FBB507] transition-colors font-medium cursor-pointer"
-            onClick={() => scrollToSection("contact")}
-          >
-            Contact
+            Scholarships
           </span>
 
+
           {/* Log In */}
-              <Link to="/auth/log_in" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
-                <CircleUserRound size={24} />   
-              </Link>
+          <a href="/college" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
+            <CircleUserRound size={24} />
+          </a>
         </div>
 
         {/* Mobile Menu Button */}
@@ -117,7 +100,7 @@ const Navbar = () => {
             </a>
 
             <div className="flex gap-4 pt-2">
-              <Link to="/auth/log_in" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
+              <Link to="/college" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
                 <CircleUserRound size={24} />   
               </Link>
             </div>

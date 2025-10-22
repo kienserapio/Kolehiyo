@@ -1,4 +1,5 @@
 import heroImage from "@/assets/UP.jpg";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -31,11 +32,11 @@ const HeroSection = () => {
             journey.
           </p>
 
-          {/* CTA Button with gradient and triangular bottom */}
+          {/* CTA Button with Link */}
           <div className="flex justify-center">
-            <div className="relative inline-block">
+            <Link to="/auth/sign_up" target="_blank" className="relative inline-block">
               <button
-                className="relative px-12 py-4 text-[20px] font-bold text-white overflow-hidden shadow-lg transition-all duration-300 hover:scale-105"
+                className="relative px-12 py-4 text-[20px] font-bold text-white overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
                 style={{
                   background: "linear-gradient(180deg, #2091F9 0%, #004689 100%)",
                   borderRadius: "35px",
@@ -43,7 +44,7 @@ const HeroSection = () => {
               >
                 Start Your College Journey
               </button>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
