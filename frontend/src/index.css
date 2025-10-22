@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+/* === Tailwind Layers === */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Dark Mode via class === */
+@custom-variant dark (&:is(.dark *));
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/src/assets/fonts/Gilroy-Regular.ttf') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('src/assets/fonts/Gilroy-Medium.ttf') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/src/assets/fonts/Gilroy-Bold.ttf') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+/* === Extended Design Tokens === */
+@theme {
+  /* Container */
+  --container-padding: 2rem;
+  --container-max-2xl: 1400px;
+
+  /* Font Family */
+  --font-sans: "Gilroy", system-ui, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", sans-serif;
+
+  /* Gradients */
+  --bg-gradient-primary: linear-gradient(
+    135deg,
+    hsl(var(--primary-blue-1)),
+    hsl(var(--primary-blue-2))
+  );
+  --bg-gradient-hero: linear-gradient(
+    135deg,
+    rgba(29, 93, 149, 0.9),
+    rgba(0, 70, 137, 0.9)
+  );
+
+  /* Border Radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/* === Animations === */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@utility accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+@utility accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
+/* === Base Theme Colors & Styles === */
+@layer base {
+  :root {
+    /* Kolehiyo Color System - Primary Blues */
+    --primary-blue-1: 203 68% 35%;
+    --primary-blue-2: 203 100% 27%;
+    --primary-blue-3: 203 100% 20%;
+    --primary-blue-4: 203 100% 13%;
+
+    /* Secondary Yellows */
+    --secondary-yellow-1: 42 97% 51%;
+    --secondary-yellow-2: 42 97% 44%;
+
+    /* Background & Surface */
+    --background: 0 0% 100%;
+    --foreground: 203 100% 13%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 203 100% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 203 100% 13%;
+
+    --primary: 203 100% 27%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 42 97% 51%;
+    --secondary-foreground: 203 100% 13%;
+
+    --muted: 203 30% 95%;
+    --muted-foreground: 203 20% 40%;
+
+    --accent: 42 97% 51%;
+    --accent-foreground: 203 100% 13%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 203 30% 85%;
+    --input: 203 30% 85%;
+    --ring: 203 100% 27%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 203 100% 13%;
+    --foreground: 0 0% 100%;
+
+    --card: 203 100% 20%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 203 100% 20%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 203 68% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 42 97% 51%;
+    --secondary-foreground: 203 100% 13%;
+
+    --muted: 203 50% 25%;
+    --muted-foreground: 203 20% 70%;
+
+    --accent: 42 97% 44%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 203 50% 25%;
+    --input: 203 50% 25%;
+    --ring: 203 68% 35%;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    /* Use Gilroy Medium as the main UI & body font */
+    font-family: 'Gilroy', var(--font-sans);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Headings should use Gilroy Bold */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Gilroy', var(--font-sans);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Form controls and UI elements should inherit the Gilroy Medium weight */
+  input,
+  textarea,
+  button,
+  select,
+  summary,
+  label {
+    font-family: inherit;
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
