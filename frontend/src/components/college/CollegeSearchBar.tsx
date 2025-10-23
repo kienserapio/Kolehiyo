@@ -50,7 +50,7 @@ const CollegeSearchBar = () => {
   };
 
   return (
-    <div className="fixed top-[330px] lg:top-80 left-1/2 -translate-x-1/2 
+    <div className="absolute top-[330px] lg:top-80 left-1/2 -translate-x-1/2 
                    w-9/12 max-w-5xl lg:w-[900px] h-auto py-6 lg:h-[150px] lg:py-0 
                    bg-white shadow-[0_4px_50px_0_rgba(0,0,0,0.2)] rounded-[50px] 
                    flex flex-col lg:flex-row items-center justify-between 

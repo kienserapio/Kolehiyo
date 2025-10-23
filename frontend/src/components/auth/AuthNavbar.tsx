@@ -16,14 +16,14 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent py-12">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent py-10">
       <div className="container mx-auto flex items-center justify-center">
         {/* Logo */}
             <div className="flex items-center">
             <img
                 src={logo}
                 alt="Kolehiyo White Logo"
-                className="w-[150px] h-auto"
+                className="w-[100px] h-auto"
             />
             </div>
         </div>

@@ -4,6 +4,7 @@ import HeroSection from '@/components/college/HeroSection'
 import UserNavbar from '@/components/UserNavbar'
 import CollegeSearchBar from '@/components/college/CollegeSearchBar'
 import { nextDay } from 'date-fns'
+import CollegesContainer from '@/components/college/CollegesContainer'
 
 export default function college() {
   return (
@@ -18,6 +19,7 @@ export default function college() {
         <UserNavbar />
         <HeroSection />
         <CollegeSearchBar />
+        <CollegesContainer />
     </div>
 
     </section>
