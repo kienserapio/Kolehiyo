@@ -1,0 +1,252 @@
+{
+  "colleges": [
+    {
+      "id": 1,
+      "universityName": "Technological University of the Philippines - Manila",
+      "address": "Ermita, Manila, Metro Manila",
+      "applicationStart": "November 25",
+      "applicationEnd": "December 25, 2025",
+      "universityType": "State University (SUCs)",
+      "tuitionFee": "PHP 0",
+      "logoUrl": "/university_logos/tup logo.png",
+      "headerImageUrl": "/photos/TUP.jpeg",
+      "admissionsUrl": "https://www.tup.edu.ph/admissions",
+      "status": "open",
+      "entranceExam": {
+        "examName": "TUP Admission Test (TUPAT)",
+        "examDateStart": "January 15",
+        "examDateEnd": "January 20, 2026",
+        "examCoverage": "Mathematics, Science, English, Filipino, and Abstract Reasoning"
+      },
+      "admissionDocuments": [
+        "Original PSA Birth Certificate",
+        "Form 138 (Report Card)",
+        "Certificate of Good Moral Character",
+        "2x2 ID Photos (3 copies)",
+        "Medical Certificate",
+        "Barangay Clearance"
+      ],
+      "topPrograms": [
+        "Bachelor of Science in Computer Engineering",
+        "Bachelor of Science in Electronics Engineering",
+        "Bachelor of Science in Mechanical Engineering",
+        "Bachelor of Science in Civil Engineering",
+        "Bachelor of Science in Industrial Engineering"
+      ],
+      "reviewResources": {
+        "mockExamLinks": [
+          {
+            "text": "TUP Official Practice Test 2025",
+            "url": "https://tup.edu.ph/practice-test"
+          },
+          {
+            "text": "TUPAT Mock Exam Series",
+            "url": "https://tup.edu.ph/mock-exam"
+          }
+        ],
+        "reviewRecommendations": [
+          {
+            "text": "TUP Entrance Exam Review Center - Manila",
+            "url": "https://tupreviewcenter.com"
+          },
+          {
+            "text": "MSA Review Center TUPAT Program",
+            "url": "https://msareview.com/tupat"
+          }
+        ]
+      },
+      "contact": {
+        "email": "admissions@tup.edu.ph",
+        "contactNumber": "+63 2 5301 3001",
+        "campusLocation": "Ayala Boulevard, Ermita, Manila, 1000 Metro Manila"
+      }
+    },
+    {
+      "id": 2,
+      "universityName": "University of the Philippines - Diliman",
+      "address": "Diliman, Quezon City, Metro Manila",
+      "applicationStart": "October 1",
+      "applicationEnd": "November 30, 2025",
+      "universityType": "State University (SUCs)",
+      "tuitionFee": "PHP 0",
+      "logoUrl": "/university_logos/up logo.png",
+      "status": "open",
+      "headerImageUrl": "/photos/UP.jpg", 
+      "admissionsUrl": "https://upcat2025online.up.edu.ph/",
+      "entranceExam": {
+        "examName": "UP College Admission Test (UPCAT)",
+        "examDateStart": "February 10",
+        "examDateEnd": "February 15, 2026",
+        "examCoverage": "Language Proficiency, Science, Mathematics, and Reading Comprehension"
+      },
+      "admissionDocuments": [
+        "PSA Birth Certificate",
+        "Senior High School Report Card (Form 138)",
+        "Certificate of Good Moral Character",
+        "2x2 ID Photos (4 copies)",
+        "Indigenous People Certification (if applicable)",
+        "Person with Disability ID (if applicable)"
+      ],
+      "topPrograms": [
+        "Bachelor of Science in Computer Science",
+        "Bachelor of Arts in Communication Research",
+        "Bachelor of Science in Business Administration",
+        "Bachelor of Science in Psychology",  
+        "Bachelor of Science in Biology"
+      ],
+      "reviewResources": {
+        "mockExamLinks": [
+          {
+            "text": "UPCAT Online Practice Test",
+            "url": "https://upd.edu.ph/upcat-practice"
+          },
+          {
+            "text": "UPCAT Sample Questions 2025",
+            "url": "https://upd.edu.ph/sample-test"
+          }
+        ],
+        "reviewRecommendations": [
+          {
+            "text": "MSA Review and Tutorial Center - UPCAT",
+            "url": "https://msareview.com/upcat"
+          },
+          {
+            "text": "The Prepster UPCAT Review",
+            "url": "https://theprepster.com/upcat"
+          },
+          {
+            "text": "Review Innovations UPCAT Program",
+            "url": "https://reviewinnovations.com/upcat"
+          }
+        ]
+      },
+      "contact": {
+        "email": "osfa@upd.edu.ph",
+        "contactNumber": "+63 2 8981 8500",
+        "campusLocation": "E. Jacinto Street, UP Campus, Diliman, Quezon City, 1101 Metro Manila"
+      }
+    },
+    {
+      "id": 3,
+      "universityName": "Ateneo de Manila University",
+      "address": "Katipunan, Quezon City, Metro Manila",
+      "applicationStart": "September 15",
+      "applicationEnd": "December 15, 2025",
+      "universityType": "Private University",
+      "tuitionFee": "PHP 85,000",
+      "logoUrl": "/university_logos/admu logo.png",
+      "status": "closed",
+      "headerImageUrl": "/photos/ADMU.jpg",
+      "admissionsUrl": "https://www.tup.edu.ph/admissions",
+      "entranceExam": {
+        "examName": "Ateneo College Entrance Test (ACET)",
+        "examDateStart": "January 25",
+        "examDateEnd": "February 5, 2026",
+        "examCoverage": "English, Mathematics, Abstract Reasoning, and Logical Reasoning"
+      },
+      "admissionDocuments": [
+        "PSA Birth Certificate",
+        "Grade 11 and 12 Report Cards",
+        "Certificate of Good Moral Character",
+        "Recommendation Letters (2 copies)",
+        "1x1 and 2x2 ID Photos",
+        "Essay or Personal Statement"
+      ],
+      "topPrograms": [
+        "Bachelor of Science in Management",
+        "Bachelor of Arts in Communications",
+        "Bachelor of Science in Psychology",
+        "Bachelor of Science in Computer Science",
+        "Bachelor of Arts in Political Science"
+      ],
+      "reviewResources": {
+        "mockExamLinks": [
+          {
+            "text": "ACET Sample Test Online",
+            "url": "https://ateneo.edu/acet-sample"
+          }
+        ],
+        "reviewRecommendations": [
+          {
+            "text": "MSA ACET Review Program",
+            "url": "https://msareview.com/acet"
+          },
+          {
+            "text": "The Prepster ACET Review",
+            "url": "https://theprepster.com/acet"
+          },
+          {
+            "text": "Brain Train ACET Prep",
+            "url": "https://braintrain.ph/acet"
+          }
+        ]
+      },
+      "contact": {
+        "email": "admissions@ateneo.edu",
+        "contactNumber": "+63 2 8426 6001",
+        "campusLocation": "Katipunan Avenue, Loyola Heights, Quezon City, 1108 Metro Manila"
+      }
+    },
+    {
+      "id": 4,
+      "universityName": "University of Santo Tomas",
+      "address": "Espana, Manila, Metro Manila",
+      "applicationStart": "September 15",
+      "applicationEnd": "December 15, 2025",
+      "universityType": "Private University",
+      "tuitionFee": "PHP 60,000",
+      "logoUrl": "/university_logos/ut logo.png",
+      "status": "closed",
+      "headerImageUrl": "/photos/UST.jpg",
+      "admissionsUrl": "https://www.tup.edu.ph/admissions",
+      "entranceExam": {
+        "examName": "UST Entrance Test (USTET)",
+        "examDateStart": "February 1",
+        "examDateEnd": "February 8, 2026",
+        "examCoverage": "English, Mathematics, Science, and Abstract Reasoning"
+      },
+      "admissionDocuments": [
+        "PSA Birth Certificate",
+        "Senior High School Report Card (Form 138)",
+        "Certificate of Good Moral Character",
+        "Baptismal Certificate (for Catholic applicants)",
+        "2x2 ID Photos (4 copies)",
+        "Medical Certificate"
+      ],
+      "topPrograms": [
+        "Bachelor of Science in Nursing",
+        "Bachelor of Science in Architecture",
+        "Bachelor of Science in Accountancy",
+        "Bachelor of Science in Pharmacy",
+        "Bachelor of Arts in Psychology"
+      ],
+      "reviewResources": {
+        "mockExamLinks": [
+          {
+            "text": "USTET Practice Test 2025",
+            "url": "https://ust.edu.ph/ustet-practice"
+          },
+          {
+            "text": "USTET Sample Questions",
+            "url": "https://ust.edu.ph/sample-test"
+          }
+        ],
+        "reviewRecommendations": [
+          {
+            "text": "Review Innovations USTET",
+            "url": "https://reviewinnovations.com/ustet"
+          },
+          {
+            "text": "MSA USTET Review Center",
+            "url": "https://msareview.com/ustet"
+          }
+        ]
+      },
+      "contact": {
+        "email": "admissions@ust.edu.ph",
+        "contactNumber": "+63 2 8731 4031",
+        "campusLocation": "España Boulevard, Sampaloc, Manila, 1008 Metro Manila"
+      }
+    }
+  ]
+}
