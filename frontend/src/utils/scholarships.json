@@ -1,0 +1,158 @@
+{
+  "scholarships": [
+    {
+      "id": 1,
+      "scholarshipName": "CHED-NCR Student Financial Assistance Program",
+      "address": "Novaliches, Quezon City, Metro Manila",
+      "applicationStart": "October 1, 2025",
+      "applicationEnd": "December 15, 2025",
+      "scholarshipType": "Government",
+      "benefits": "PHP 80,000 / year",
+      "logoUrl": "/scholarship_logos/ched logo.png",
+      "headerImageUrl": "/photos/CHED.jpg",
+      "applicationUrl": "https://ched.gov.ph/scholarships",
+      "status": "open",
+      "applicationRequirements": [
+        "Duly accomplished CHED Scholarship Application Form",
+        "Certificate of Good Moral Character",
+        "Income Tax Return or Certificate of Indigency",
+        "Form 138 or Transcript of Records",
+        "2x2 ID Photo (2 copies)"
+      ],
+      "prioritizedPrograms": [
+        "Engineering and Technology",
+        "Information Technology",
+        "Science and Mathematics",
+        "Agriculture and Fisheries",
+        "Teacher Education"
+      ],
+      "reviewResources": {
+        "guides": [
+          {
+            "text": "CHED Scholarship FAQs",
+            "url": "https://ched.gov.ph/scholarship-faq"
+          },
+          {
+            "text": "CHED Priority Courses 2025",
+            "url": "https://ched.gov.ph/priority-courses"
+          }
+        ],
+        "recommendations": [
+          {
+            "text": "Tips on Writing Scholarship Essays",
+            "url": "https://scholarshipphilippines.com/essay-tips"
+          },
+          {
+            "text": "CHED Application Tutorial Video",
+            "url": "https://youtube.com/chedscholarshipguide"
+          }
+        ]
+      },
+      "contact": {
+        "email": "chedscholarships@ched.gov.ph",
+        "contactNumber": "+63 2 441 1260",
+        "officeLocation": "Higher Education Development Center Building, C.P. Garcia Ave., Diliman, Quezon City"
+      }
+    },
+    {
+      "id": 2,
+      "scholarshipName": "SM Foundation College Scholarship",
+      "address": "Pasay City, Metro Manila",
+      "applicationStart": "January 1, 2026",
+      "applicationEnd": "March 30, 2026",
+      "scholarshipType": "Private / Corporate",
+      "benefits": "Full tuition + monthly allowance",
+      "logoUrl": "/scholarship_logos/sm logo.jpg",
+      "headerImageUrl": "/photos/SM.png",
+      "applicationUrl": "https://sm-foundation.org/scholarship",
+      "status": "open",
+      "applicationRequirements": [
+        "Online Application Form",
+        "Latest Report Card (Form 138)",
+        "Certificate of Good Moral Character",
+        "Income Tax Return or Certificate of Non-Filing",
+        "2x2 ID Picture"
+      ],
+      "prioritizedPrograms": [
+        "Accountancy",
+        "Information Technology",
+        "Engineering",
+        "Education",
+        "Business Administration"
+      ],
+      "reviewResources": {
+        "guides": [
+          {
+            "text": "SM Foundation Application Guidelines",
+            "url": "https://sm-foundation.org/scholarship-guide"
+          },
+          {
+            "text": "Frequently Asked Questions",
+            "url": "https://sm-foundation.org/faqs"
+          }
+        ],
+        "recommendations": [
+          {
+            "text": "Scholarship Application Tips",
+            "url": "https://blog.scholarshipph.org/application-tips"
+          }
+        ]
+      },
+      "contact": {
+        "email": "scholarship@sm-foundation.org",
+        "contactNumber": "+63 2 876 1111",
+        "officeLocation": "SM Foundation Building, Bay City, Pasay City"
+      }
+    },
+    {
+      "id": 3,
+      "scholarshipName": "DOST-SEI Undergraduate Scholarship",
+      "address": "Bicutan, Taguig City, Metro Manila",
+      "applicationStart": "January 1, 2026",
+      "applicationEnd": "March 30, 2026",
+      "scholarshipType": "Government",
+      "benefits": "PHP 20,000 + 8,000 allowance / semester",
+      "logoUrl": "/scholarship_logos/dost logo.png",
+      "headerImageUrl": "/photos/DOST.jpg",
+      "applicationUrl": "https://sm-foundation.org/scholarship",
+      "status": "open",
+      "applicationRequirements": [
+        "Online Application Form",
+        "Latest Report Card (Form 138)",
+        "Certificate of Good Moral Character",
+        "Income Tax Return or Certificate of Non-Filing",
+        "2x2 ID Picture"
+      ],
+      "prioritizedPrograms": [
+        "Accountancy",
+        "Information Technology",
+        "Engineering",
+        "Education",
+        "Business Administration"
+      ],
+      "reviewResources": {
+        "guides": [
+          {
+            "text": "SM Foundation Application Guidelines",
+            "url": "https://sm-foundation.org/scholarship-guide"
+          },
+          {
+            "text": "Frequently Asked Questions",
+            "url": "https://sm-foundation.org/faqs"
+          }
+        ],
+        "recommendations": [
+          {
+            "text": "Scholarship Application Tips",
+            "url": "https://blog.scholarshipph.org/application-tips"
+          }
+        ]
+      },
+      "contact": {
+        "email": "scholarship@sm-foundation.org",
+        "contactNumber": "+63 2 876 1111",
+        "officeLocation": "SM Foundation Building, Bay City, Pasay City"
+      }
+    }
+  ]
+}
