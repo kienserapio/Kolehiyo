@@ -2,13 +2,31 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { User } from '@supabase/supabase-js';
 
+import { supabase } from "@/supabaseClient";
+
+// Extend the Supabase User type to include our custom fields
+interface DbUser extends User {
+  auth_user_id: string;
+  full_name: string;
+  track: string;
+  program: string;
+  city: string;
+}
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+const email = user?.email;
 
 export default function Onboarding() {
   const [fullName, setFullName] = useState("");
   const [track, setTrack] = useState("");
   const [program, setProgram] = useState("");
   const [city, setCity] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [showTrackDropdown, setShowTrackDropdown] = useState(false);
   const [showProgramDropdown, setShowProgramDropdown] = useState(false);
@@ -65,12 +83,42 @@ const navigate = useNavigate();
     "Pateros",
   ];
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!fullName || !track || !program || !city) {
       alert("Please complete all fields.");
       return;
     } 
-    navigate("/college");
+    setLoading(true);
+
+    // Get the currently signed-in user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      alert("Session expired. Please sign in again.");
+      navigate("/auth/log_in");
+      return;
+    }
+
+    // Insert the onboarding data into 'users'
+    const { error: insertError } = await supabase.from("users").insert([
+      {
+        auth_user_id: user.id, // Use the auth user's id as auth_user_id
+        full_name: fullName,
+        track,
+        program,
+        city,
+        email: user.email,
+      },
+    ]);
+
+    setLoading(false);
+
+    if (insertError) {
+      console.error(insertError);
+      alert("Error saving your details. Please try again.");
+    } else {
+      alert("Profile saved successfully!");
+      navigate("/auth/log_in"); // or wherever your app proceeds next
+    }
   };
 
   return (

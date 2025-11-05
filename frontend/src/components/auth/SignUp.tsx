@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+import { supabase } from '@/supabaseClient'
+
 export default function SignUp() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -15,7 +17,7 @@ export default function SignUp() {
 
 const navigate = useNavigate();
 
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
     const newErrors: { [key: string]: string } = {};
 
     if (!email) newErrors.email = "Email is required";
@@ -30,11 +32,21 @@ const navigate = useNavigate();
 
     setErrors(newErrors);
 
-    // ✅ If no errors, navigate to the next page
-    if (Object.keys(newErrors).length === 0) {
-      alert("Account created! Redirecting to onboarding...");
-      navigate("/auth/onboarding");
+    if (Object.keys(newErrors).length > 0) return;
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error("Sign-up error:", error.message);
+      setErrors({ general: error.message });
+      return;
     }
+
+    alert("Account created! Please check your email for verification before logging in.");
+    navigate("/auth/onboarding");
   };
   const handleLogin = (): void => {
     // window.location.href = '/login';

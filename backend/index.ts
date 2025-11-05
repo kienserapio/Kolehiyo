@@ -2,30 +2,40 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express, { Request, Response, NextFunction } from 'express';
+import logger from './src/middleware/logger';
+import corsMiddleware from './src/middleware/cors';
 import bodyParser from 'body-parser';
-import { clerkWebhookHandler } from './src/api/webhook/clerk'; 
+import rawWebhookHandler from './src/api/webhook/webhookHandler';
+import healthRouter from './src/api/health';
+import scholarshipRoutes, { registerScholarshipRoutes } from './src/routes/scholarshipRoutes';
+import collegeRoutes, { registerCollegeRoutes } from './src/routes/collegeRoutes';
+import errorHandler from './src/middleware/errorHandler';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-    if (req.originalUrl === '/api/webhook/clerk') {
-        next();
-    } else {
-        express.json()(req, res, next);
-    }
-});
+// logging, CORS and body parsing
+app.use(logger);
+app.use(corsMiddleware);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.post(
-    '/api/webhook/clerk',
-    bodyParser.raw({ type: 'application/json' }),
-    clerkWebhookHandler
-);
+// health endpoints (mounted from router)
+app.use('/', healthRouter);
 
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).send('Kolehiyo Backend is running.');
-});
+// Raw webhook endpoint (signature verification should run here)
+// Uses bodyParser.raw to preserve the raw body for signature checks
+app.post('/api/webhook', bodyParser.raw({ type: 'application/json' }), rawWebhookHandler as any);
+
+// Register API routes
+registerScholarshipRoutes(app, '/api');
+registerCollegeRoutes(app, '/api');
+
+// Global error handler (must be after routes)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
+
+export default app;

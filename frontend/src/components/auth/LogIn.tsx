@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from "@/supabaseClient";
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>('');
@@ -12,7 +13,7 @@ export default function LogIn() {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
     const newErrors: { [key: string]: string } = {};
 
     if (!email) newErrors.email = 'Email is required';
@@ -23,11 +24,64 @@ export default function LogIn() {
 
     setErrors(newErrors);
 
-    // ✅ If no errors, navigate to the next page
-    if (Object.keys(newErrors).length === 0) {
-      alert('Login successful! Redirecting...');
-      navigate('/college');
+    if (Object.keys(newErrors).length > 0) return;
+
+    // ✅ Try signing in with Supabase
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error("Login error:", error.message);
+      setErrors({ general: error.message });
+      return;
     }
+
+    // ✅ Get user info from the active session
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      console.error("Failed to fetch user:", userError?.message);
+      setErrors({ general: "Failed to retrieve user data." });
+      return;
+    }
+
+    // ✅ Check if profile already exists
+    const { data: existingProfile, error: selectError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("auth_user_id", user.id)
+      .maybeSingle();
+
+    if (selectError) {
+      console.error("Error checking existing profile:", selectError);
+    }
+
+    // ✅ If profile doesn't exist, create one
+    if (!existingProfile) {
+      const { error: insertError } = await supabase.from("users").insert({
+        auth_user_id: user.id,
+        email: user.email,
+        full_name: "",
+        academic_level: null,
+        region: null,
+      });
+
+      if (insertError) {
+        console.error("Profile insert error:", insertError);
+      } else {
+        console.log("✅ New user profile created successfully!");
+      }
+    } else {
+      console.log("Profile already exists, skipping insert.");
+    }
+
+    alert("Login successful! Redirecting...");
+    navigate("/college");
   };
 
   return (

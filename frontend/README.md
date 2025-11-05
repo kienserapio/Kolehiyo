@@ -85,7 +85,7 @@ Smart reminders and notifications keep students on track:
 - 🚂 [Express](https://expressjs.com/)
 - 🐘 [PostgreSQL](https://www.postgresql.org/)
 - 🧰 [Supabase](https://supabase.com/) — database + auth + storage
-- 🔐 [Clerk](https://clerk.com/) — authentication and user management
+- 🔐 [Supabase Auth](https://supabase.com/) — authentication and user management
 
 ---
 
