@@ -8,6 +8,16 @@ export default defineConfig({
     react(),        
     tailwindcss(),  
   ],
+  server: {
+    // During development forward /api requests to the backend server
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'), 

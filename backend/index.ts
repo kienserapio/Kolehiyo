@@ -20,6 +20,8 @@ app.use(corsMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (_req, res) => res.send('Kolehiyo backend: OK'));
+
 // health endpoints (mounted from router)
 app.use('/', healthRouter);
 
