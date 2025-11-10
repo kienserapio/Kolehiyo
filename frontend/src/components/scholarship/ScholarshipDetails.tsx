@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
-import scholarshipsData from "@/utils/scholarships.json";
+/* 
+Removed the import scholarshipsData from "@/utils/scholarships.json".
+Added an async fetch call to /api/scholarships/{id} to get details.
+Added loading & error handling.
+Made field names fallback-compatible (snake_case or camelCase) for database + JSON compatibility.
+Used isOpen to prevent unnecessary fetches when the modal is closed.
+ */
+
+import React, { useEffect, useState } from "react";
 
 interface ReviewResource {
   text: string;
@@ -17,9 +24,9 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
   onClose,
   scholarshipId,
 }) => {
-  const scholarship = scholarshipsData.scholarships.find(
-    (s) => s.id === scholarshipId
-  );
+  const [scholarship, setScholarship] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "unset";
@@ -28,20 +35,66 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!scholarshipId || !isOpen) return;
+
+    const fetchScholarship = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const res = await fetch(`/api/scholarships/${scholarshipId}`);
+        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+
+        const json = await res.json();
+        setScholarship(json.data ?? null);
+      } catch (err: any) {
+        console.error("Error fetching scholarship details:", err);
+        setError(err?.message ?? "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScholarship();
+  }, [scholarshipId, isOpen]);
+
+  if (!isOpen) return null;
+
+  if (loading) // loading state, must edit later
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 text-white">
+        Loading scholarship details...
+      </div>
+    );
+
+  if (error) // error state, must edit later
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 text-red-500">
+        {error}
+      </div>
+    );
+
   if (!scholarship) return null;
 
   const statusStyles = {
     open: {
-      bg: "bg-[#7DD27D]",
+      bg: "bg-[#7DD27D]", // soft green tone for "open"
       text: "text-[#178717]",
     },
     closed: {
-      bg: "bg-gray-300",
+      bg: "bg-gray-300", // neutral gray for "closed"
       text: "text-gray-600",
+    },
+    "coming soon": {
+      bg: "bg-[#FFD966]", // soft yellow tone for "coming soon"
+      text: "text-[#8A6D1F]",
     },
   };
 
-  const currentStatus = statusStyles[scholarship.status as "open" | "closed"];
+  const normalizedStatus = (scholarship.application_status ?? "open").toLowerCase();
+  const currentStatus = statusStyles[normalizedStatus as keyof typeof statusStyles] 
+    ?? statusStyles.open;
 
   return (
     <>
@@ -70,8 +123,8 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
         {/* Header Image */}
         <div className="relative w-full h-[200px] overflow-hidden lg:rounded-none rounded-t-[35px]">
           <img
-            src={scholarship.headerImageUrl}
-            alt={`${scholarship.scholarshipName} header`}
+            src={scholarship.header_image_url ?? scholarship.headerImageUrl}
+            alt={`${scholarship.name ?? scholarship.scholarshipName} header`}
             className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#012243] z-10 opacity-75" />
@@ -86,16 +139,15 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
           }}
         >
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center h-full gap-3 lg:gap-0">
-            {/* Left: Logo and Info */}
             <div className="flex gap-4 items-center flex-1">
               <img
-                src={scholarship.logoUrl}
-                alt={`${scholarship.scholarshipName} logo`}
+                src={scholarship.logo_url ?? scholarship.logoUrl}
+                alt={`${scholarship.name ?? scholarship.scholarshipName} logo`}
                 className="w-20 h-20 object-contain flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <h2 className="text-[18px] font-bold text-[#1E1E1E] leading-tight truncate">
-                  {scholarship.scholarshipName}
+                  {scholarship.name ?? scholarship.scholarshipName}
                 </h2>
                 <p className="text-[16px] text-[#1E1E1E] mt-1 truncate">
                   {scholarship.address}
@@ -105,13 +157,15 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
                   <div
                     className={`${currentStatus.bg} ${currentStatus.text} font-bold inline-flex items-center justify-center rounded-[25px] text-sm px-4 py-1`}
                   >
-                    {scholarship.status.charAt(0).toUpperCase() +
-                      scholarship.status.slice(1)}
+                    {(scholarship.application_status ?? "Open")
+                      .charAt(0)
+                      .toUpperCase() +
+                      (scholarship.application_status ?? "Open").slice(1)}
                   </div>
 
-                  {/* Apply Now button for mobile */}
+                  {/* Apply Now button for mobile - NOT TESTED */}
                   <a
-                    href={scholarship.applicationUrl}
+                    href={scholarship.official_link ?? scholarship.applicationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-bold text-white rounded-[25px] transition-opacity hover:opacity-90 flex items-center justify-center flex-shrink-0
@@ -131,7 +185,7 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
 
             {/* Apply Now (Desktop) */}
             <a
-              href={scholarship.applicationUrl}
+              href={scholarship.official_link ?? scholarship.applicationUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden lg:flex font-bold text-white rounded-[25px] transition-opacity hover:opacity-90 items-center justify-center flex-shrink-0
@@ -153,15 +207,15 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
           style={{ maxHeight: "calc(90vh - 340px)", scrollbarWidth: "thin" }}
         >
           <div className="space-y-5 text-[#1E1E1E]">
-            {/* Basic Info */}
             <div>
               <p className="text-[16px]">
                 <span className="font-bold">Application:</span>{" "}
-                {scholarship.applicationStart} - {scholarship.applicationEnd}
+                {scholarship.application_start} -{" "}
+                {scholarship.application_end}
               </p>
               <p className="text-[16px] mt-1">
                 <span className="font-bold">Scholarship Type:</span>{" "}
-                {scholarship.scholarshipType}
+                {scholarship.scho_type}
               </p>
               <p className="text-[16px] mt-1">
                 <span className="font-bold">Benefits:</span>{" "}
@@ -172,104 +226,26 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
             <hr className="border-t border-gray-400" />
 
             {/* Requirements */}
-            <div>
-              <h3 className="text-[20px] font-bold mb-3">
-                Application Requirements
-              </h3>
-              <ul className="list-disc list-inside space-y-1">
-                {scholarship.applicationRequirements.map((req, index) => (
-                  <li key={index} className="text-[16px]">
-                    {req}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Prioritized Programs */}
-            <div>
-              <h3 className="text-[20px] font-bold mb-3">
-                Prioritized Programs
-              </h3>
-              <ul className="list-disc list-inside space-y-1">
-                {scholarship.prioritizedPrograms.map((program, index) => (
-                  <li key={index} className="text-[16px]">
-                    {program}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Review Resources */}
-            <div>
-              <h3 className="text-[20px] font-bold mb-3">
-                Review & Application Resources
-              </h3>
-
-              <div className="mb-4">
-                <h4 className="text-[16px] font-bold mb-2">Guides:</h4>
-                <ul className="list-disc list-inside space-y-1">
-                  {scholarship.reviewResources.guides.map(
-                    (link: ReviewResource, index: number) => (
-                      <li key={index} className="text-[16px]">
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#1D5D95] hover:underline"
-                        >
-                          {link.text}
-                        </a>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-
+            {scholarship.scho_requirements && (
               <div>
-                <h4 className="text-[16px] font-bold mb-2">
-                  Recommendations:
-                </h4>
+                <h3 className="text-[20px] font-bold mb-3">
+                  Application Requirements
+                </h3>
                 <ul className="list-disc list-inside space-y-1">
-                  {scholarship.reviewResources.recommendations.map(
-                    (link: ReviewResource, index: number) => (
-                      <li key={index} className="text-[16px]">
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#1D5D95] hover:underline"
-                        >
-                          {link.text}
-                        </a>
+                  {scholarship.scho_requirements.map(
+                    (req: string, i: number) => (
+                      <li key={i} className="text-[16px]">
+                        {req}
                       </li>
                     )
                   )}
                 </ul>
               </div>
-            </div>
-
-            {/* Contact Info */}
-            <div>
-              <h3 className="text-[20px] font-bold mb-3">
-                Contact Information
-              </h3>
-              <p className="text-[16px]">
-                <span className="font-bold">Email:</span>{" "}
-                {scholarship.contact.email}
-              </p>
-              <p className="text-[16px] mt-2">
-                <span className="font-bold">Contact Number:</span>{" "}
-                {scholarship.contact.contactNumber}
-              </p>
-              <p className="text-[16px] mt-2">
-                <span className="font-bold">Office Location:</span>{" "}
-                {scholarship.contact.officeLocation}
-              </p>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Fixed Bottom Button */}
+        {/* Bottom Button */}
         <div
           className="absolute bottom-0 left-0 right-0 bg-white rounded-[25px] p-6 flex justify-center"
           style={{

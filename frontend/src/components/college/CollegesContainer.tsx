@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CollegeCard from './CollegeCard';
 import CollegeDetails from './CollegeDetails';
 
-// We'll fetch college data from the backend API instead of using the local JSON
+// Fetch college data from the backend API instead of using the local JSON
 
 export default function CollegesContainer() {
   const [colleges, setColleges] = useState<any[]>([]);
@@ -12,7 +12,37 @@ export default function CollegesContainer() {
   const [error, setError] = useState<string | null>(null);
 
   const handleCardClick = (college: any) => {
-    setSelectedCollege(college);
+    const formattedCollege = {
+      universityName: college.name,
+      address: college.address,
+      applicationStart: college.application_start,
+      applicationEnd: college.application_end,
+      universityType: college.university_type,
+      tuitionFee: college.tuition_fee,
+      logoUrl: college.logo_url,
+      headerImageUrl: college.header_image_url ?? '/default-header.jpg',
+      admissionsUrl: college.admissions_url ?? '#',
+      status: (college.application_status ?? 'open').toLowerCase(),
+      entranceExam: {
+        examName: college.exam_name ?? '',
+        examDateStart: college.exam_date_start ?? '',
+        examDateEnd: college.exam_date_end ?? '',
+        examCoverage: college.exam_coverage ?? '',
+      },
+      admissionDocuments: college.admission_documents ?? [],
+      topPrograms: college.top_programs ?? [],
+      reviewResources: {
+        mockExamLinks: college.mock_exam_links ?? [],
+        reviewRecommendations: college.review_recommendations ?? [],
+      },
+      contact: {
+        email: college.email ?? '',
+        contactNumber: college.contact_number ?? '',
+        campusLocation: college.campus_location ?? '',
+      },
+    };
+
+    setSelectedCollege(formattedCollege);
     setIsDetailsOpen(true);
   };
 
@@ -26,7 +56,7 @@ export default function CollegesContainer() {
       setLoading(true);
       setError(null);
       try {
-        // Adjust base URL if your backend is on another host/port (e.g. http://localhost:3000)
+        // Adjust base URL if your backend is on another host/port (e.g. http://localhost:5000)
         const res = await fetch('/api/colleges');
         if (!res.ok) {
           const text = await res.text().catch(() => res.statusText || String(res.status));
@@ -75,14 +105,14 @@ export default function CollegesContainer() {
         {colleges.map((college: any) => (
           <div key={college.id} className="flex justify-center lg:justify-start">
             <CollegeCard
-              universityName={college.name ?? college.universityName}
+              universityName={college.name}
               address={college.address}
-              applicationStart={college.application_start ?? college.applicationStart}
-              applicationEnd={college.application_end ?? college.applicationEnd}
-              universityType={college.university_type ?? college.universityType}
-              tuitionFee={college.tuition_fee ?? college.tuitionFee}
-              logoUrl={college.logo_url ?? college.logoUrl}
-              status={(college.application_status ?? college.status ?? 'open').toLowerCase() === 'open' ? 'open' : 'closed'}
+              applicationStart={college.application_start}
+              applicationEnd={college.application_end}
+              universityType={college.university_type}
+              tuitionFee={college.tuition_fee}
+              logoUrl={college.logo_url}
+              status={(college.application_status ?? 'open').toLowerCase() === 'open' ? 'open' : 'closed'}
               onClick={() => handleCardClick(college)}
             />
           </div>
