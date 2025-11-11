@@ -17,11 +17,13 @@ const router = express.Router();
 // Public list
 router.get('/colleges', wrap(listCollegesHandler));
 
+// Tracked colleges for a user (requires auth)
+router.get('/colleges/tracked', supabaseAuth, wrap(trackedCollegesHandler));
+
 // Single college details
 router.get('/colleges/:id', wrap(collegeDetailsHandler));
 
-// Tracked colleges for a user (requires auth)
-router.get('/colleges/tracked', supabaseAuth, wrap(trackedCollegesHandler));
+
 
 // Add to tracker
 router.post('/colleges/tracked', supabaseAuth, validateBody(addCollegeToTrackerSchema), wrap(addCollegeToTrackerHandler));

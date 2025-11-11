@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BoardCard from "./BoardCard";
+import { supabase } from "@/supabaseClient";
 
 export default function CollegesBoard() {
   const [colleges, setColleges] = useState<any[]>([]);
@@ -11,10 +12,25 @@ export default function CollegesBoard() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/colleges');
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+          setError("You must be logged in to view your board.");
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch("http://localhost:5000/api/colleges/tracked", {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
         if (!res.ok) {
           const text = await res.text().catch(() => res.statusText || String(res.status));
-          throw new Error(`Failed to fetch colleges: ${res.status} ${text}`);
+          throw new Error(`Failed to fetch tracked colleges: ${res.status} ${text}`);
         }
 
         const contentType = res.headers.get('content-type') || '';
@@ -25,20 +41,40 @@ export default function CollegesBoard() {
 
         const json = await res.json();
         const list = json.data ?? [];
+
         // Map to board shape
-        const boards = list.map((college: any) => ({
-          id: `college-${college.id}`,
-          universityName: college.name ?? college.universityName,
-          address: college.address,
-          logoUrl: college.logo_url ?? college.logoUrl,
-          requirements: college.requirements ?? college.admissionDocuments ?? [],
-          status: (college.application_status ?? college.status ?? 'open').toLowerCase() === 'open' ? 'open' : 'closed',
-        }));
+        const boards = list.map((item: any) => {
+          const college = item.college ?? {}; // nested college data
+          return {
+            id: `college-${college.id ?? item.college_id ?? item.tracker_id}`,
+            universityName: college.name ?? 'Unknown College',
+            address: college.address ?? 'N/A',
+            logoUrl: college.logo_url ?? null,
+            requirements: college.requirements ?? [],
+            status: (college.application_status ?? item.status ?? 'open').toLowerCase() === 'open' ? 'open' : 'closed',
+          };
+        });
 
         setColleges(boards);
-      } catch (err: any) {
-        console.error('Error fetching colleges for board:', err);
-        setError(err?.message ?? 'Unknown error');
+      } catch (err: unknown) {
+        // log original error for debugging
+        console.error("❌ Error in getTrackedColleges:", err);
+
+        // Normalize message for UI/state. `err` can be Error, string, or other.
+        let message = "Failed to fetch tracked colleges.";
+        if (err instanceof Error) {
+          message = err.message;
+        } else if (typeof err === "string") {
+          message = err;
+        } else {
+          try {
+            message = JSON.stringify(err);
+          } catch (e) {
+            // ignore JSON stringify errors
+          }
+        }
+
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -47,9 +83,45 @@ export default function CollegesBoard() {
     fetchColleges();
   }, []);
 
-  const handleRemoveCard = (id: string) => {
-    const updatedColleges = colleges.filter(college => college.id !== id);
-    setColleges(updatedColleges);
+  const handleRemoveCard = async (id: string) => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setError("You must be logged in to remove a college.");
+        return;
+      }
+
+      const userId = session.user.id;
+      const collegeId = id.replace("college-", ""); // adjust if your id format differs
+
+      const res = await fetch("http://localhost:5000/api/colleges/tracked", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId, collegeId }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText || String(res.status));
+        throw new Error(`Failed to delete college: ${res.status} ${text}`);
+      }
+
+      const json = await res.json();
+      console.log("✅ Removed college:", json.data);
+
+      // Update UI after successful deletion
+      const updatedColleges = colleges.filter(college => college.id !== id);
+      setColleges(updatedColleges);
+
+    } catch (err) {
+      console.error("❌ Error removing college:", err);
+      setError(err instanceof Error ? err.message : String(err));
+    }
   };
 
   return (

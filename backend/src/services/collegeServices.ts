@@ -171,7 +171,7 @@ export const getTrackedColleges = async (userId: string): Promise<Array<TrackedC
     const { data, error } = await supabase
       .from(trackerTable)
       .select(joinQuery)
-      .eq('user_id', userId);
+      .eq('auth_user_id', userId);
 
     if (error) {
       console.warn(`SUPABASE: getTrackedColleges - table=${trackerTable} error=`, error.message);
@@ -222,7 +222,7 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
     const { data: existing, error: checkError } = await supabase
       .from(trackerTable)
       .select('tracker_id')
-      .eq('user_id', userId)
+      .eq('auth_user_id', userId)
       .eq('college_id', collegeId)
       .limit(1);
 
@@ -250,7 +250,7 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
     const { data, error } = await supabase
       .from(trackerTable)
       .insert({
-        user_id: userId,
+        auth_user_id: userId,
         college_id: collegeId,
         status: defaultStatus,
         checklist: newChecklist, 
@@ -277,7 +277,7 @@ export const removeCollegeFromTracker = async (userId: string, collegeId: string
     const { data: existing, error: checkError } = await supabase
       .from(trackerTable)
       .select('*')
-      .eq('user_id', userId)
+      .eq('auth_user_id', userId)
       .eq('college_id', collegeId)
       .limit(1);
 

@@ -65,11 +65,17 @@ export const addCollegeToTrackerHandler = async (req: Request, res: Response) =>
   const userId = String(userIdFromReq ?? req.body.userId ?? '');
   if (!userId || !collegeId) return res.status(400).json({ error: 'userId and collegeId are required' });
 
+  console.log("Incoming body:", req.body);
+  console.log("User ID from token:", (req as any).userId);
+
   try {
+    console.log("Inserting collegeId:", collegeId, "for user:", userId);
     const created = await addCollegeToTracker(String(userId), String(collegeId));
+    console.log("Inserting collegeId:", collegeId, "for user:", userId);
     return res.status(201).json({ data: created });
   } catch (err: any) {
-    console.error('addCollegeToTrackerHandler error:', err?.message ?? err);
+    console.error("addCollegeToTrackerHandler error:", err);
+
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({ error: err.message, details: err.details });
     }

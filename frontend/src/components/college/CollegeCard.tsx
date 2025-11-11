@@ -1,4 +1,5 @@
 import React from 'react';
+import { supabase } from '@/supabaseClient';
 
 export interface CollegeCardProps {
   universityName: string;
@@ -9,6 +10,7 @@ export interface CollegeCardProps {
   tuitionFee: string;
   logoUrl: string;
   status: 'open' | 'closed';
+  collegeId?: string; // College ID for triggering api call to correct college - Add to board
   onClick?: () => void;
 }
 
@@ -21,6 +23,7 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
   tuitionFee,
   logoUrl,
   status,
+  collegeId,
   onClick
 }) => {
   const statusStyles = {
@@ -35,6 +38,40 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
   };
 
   const currentStatus = statusStyles[status];
+
+  const handleAddToBoard = async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        alert("You must be logged in to add to your board.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:5000/api/colleges/tracked", { // 👈 use your Express backend URL
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`, // ✅ include token
+        },
+        body: JSON.stringify({
+          collegeId: collegeId.toString(), // adjust field name
+        }),
+      });
+
+      if (!response.ok) {
+        const msg = await response.text();
+        throw new Error(msg);
+      }
+
+      alert(`${universityName} has been added to your board!`);
+    } catch (err) {
+      console.error("Add to board failed:", err);
+      alert("Failed to add to board.");
+    }
+  };
 
   return (
     <div 
@@ -98,7 +135,7 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
 
         {/* Add to Board Button */}
         <button
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleAddToBoard}
         className="
             font-bold text-white rounded-[25px] transition-opacity hover:opacity-90
             text-sm sm:text-base flex-1 sm:flex-initial px-2 py-2

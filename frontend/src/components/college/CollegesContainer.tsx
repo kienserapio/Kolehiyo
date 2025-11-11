@@ -105,6 +105,7 @@ export default function CollegesContainer() {
         {colleges.map((college: any) => (
           <div key={college.id} className="flex justify-center lg:justify-start">
             <CollegeCard
+              collegeId={college.id}
               universityName={college.name}
               address={college.address}
               applicationStart={college.application_start}
