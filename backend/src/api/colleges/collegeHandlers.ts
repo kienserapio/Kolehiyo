@@ -105,16 +105,24 @@ export const removeCollegeFromTrackerHandler = async (req: Request, res: Respons
 // Handler: PATCH /api/colleges/tracked/checklist  body: { trackerId, checklist }
 export const updateCollegeChecklistHandler = async (req: Request, res: Response) => {
   const { trackerId, checklist } = req.body;
-  if (!trackerId || !Array.isArray(checklist)) return res.status(400).json({ error: 'trackerId and checklist array are required' });
+  console.log("Received checklist update:", req.body);
+
+  if (!trackerId || !Array.isArray(checklist)) {
+    console.log("Invalid request body:", req.body);
+    return res.status(400).json({ error: 'trackerId and checklist array are required' });
+  }
 
   try {
+    console.log("Updating checklist for trackerId:", trackerId, "with checklist:", checklist);
     const updated = await updateTrackerChecklist(Number(trackerId), checklist);
+    console.log("Updated checklist for trackerId:", trackerId, " result:", updated);
     return res.status(200).json({ data: updated });
   } catch (err: any) {
     console.error('updateCollegeChecklistHandler error:', err?.message ?? err);
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({ error: err.message, details: err.details });
     }
+    
     return res.status(500).json({ error: 'Internal server error' });
   }
 };

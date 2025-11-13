@@ -44,16 +44,41 @@ export default function CollegesBoard() {
 
         // Map to board shape
         const boards = list.map((item: any) => {
-          const college = item.college ?? {}; // nested college data
+          const college = item.college; // nested college data
+          console.log("Processing college item:", item);
+          const rawRequirements = college.requirements ?? item.requirements ?? item.checklist;
+          console.log("Raw requirements for college", item.tracker_id, ":", rawRequirements);
+
+          // Normalize: ensure each requirement is an object with name + checked
+          const normalizedRequirements = Array.isArray(rawRequirements)
+            ? rawRequirements.map((r: any) => {
+                if (typeof r === "string") return { item: r, checked: false };
+
+                const checkedValue =
+                  r.checked === true ||
+                  r.checked === "true" ||
+                  r.checked === 1 ||
+                  r.checked === "t";
+
+                return {
+                  item: r.item ?? String(r),
+                  checked: checkedValue,
+                };
+              })
+            : [];
+
           return {
+            trackerId: item.tracker_id,
             id: `college-${college.id ?? item.college_id ?? item.tracker_id}`,
             universityName: college.name ?? 'Unknown College',
             address: college.address ?? 'N/A',
             logoUrl: college.logo_url ?? null,
-            requirements: college.requirements ?? [],
+            requirements: normalizedRequirements ?? [],
             status: (college.application_status ?? item.status ?? 'open').toLowerCase() === 'open' ? 'open' : 'closed',
           };
         });
+
+        console.log("Fetched tracked colleges:", list);
 
         setColleges(boards);
       } catch (err: unknown) {
@@ -149,10 +174,14 @@ export default function CollegesBoard() {
         {colleges.map((college) => (
           <div key={college.id} className="flex justify-start">
             <BoardCard
+              trackerId={college.trackerId} // pass trackerId for updates
               universityName={college.universityName}
               address={college.address}
               logoUrl={college.logoUrl}
-              requirements={college.requirements}
+              requirements={college.requirements.map(req => ({
+                item: req.item,
+                checked: req.checked,
+              }))}
               status={college.status}
               onRemove={() => handleRemoveCard(college.id)}
             />

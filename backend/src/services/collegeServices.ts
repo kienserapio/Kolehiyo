@@ -338,11 +338,10 @@ export const updateTrackerChecklist = async (
       .from(trackerTable)
       .update({ 
         checklist: newChecklist,
-        progress: progress 
+        progress
       })
       .eq('tracker_id', trackerId)
-      .select()
-      .single();
+      .select();
 
     if (error) {
       throw new Error(`Failed to update checklist: ${error.message}`);

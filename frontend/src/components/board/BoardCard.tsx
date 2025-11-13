@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import debounce from 'lodash.debounce'; // run `npm install lodash.debounce`
+import { supabase } from "@/supabaseClient";
+
+// THIS FILE IS FOR THE COLLEGES BOARD CARD COMPONENT
 
 export interface BoardCardProps {
+  trackerId: string; // added so we know which tracker to update
   universityName: string;
   address: string;
   logoUrl: string;
-  requirements: string[];
+  requirements: { item: string; checked: boolean }[];
   status: 'open' | 'closed';
   onRemove?: () => void;
 }
 
 const BoardCard: React.FC<BoardCardProps> = ({
+  trackerId,
   universityName,
   address,
   logoUrl,
@@ -17,10 +23,74 @@ const BoardCard: React.FC<BoardCardProps> = ({
   status,
   onRemove
 }) => {
-  const [checkedRequirements, setCheckedRequirements] = useState<boolean[]>(
-    new Array(requirements.length).fill(false)
+  // ✅ 1. Local state for checklist
+  const [requirementsState, setRequirementsState] = useState(
+    requirements.map(r => ({ ...r }))
+  );
+  const [isSaving, setIsSaving] = useState(false);
+
+  // ✅ 2. Debounced save function
+  const saveRequirements = useCallback(
+    debounce(async (updatedRequirements: { item: string; checked: boolean }[]) => {
+      try {
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (sessionError || !session) {
+          console.error("No active Supabase session found:", sessionError);
+          return;
+        }
+
+        setIsSaving(true);
+        const res = await fetch('http://localhost:5000/api/colleges/tracked/checklist', {
+          method: 'PATCH',
+          headers: { 
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            trackerId: Number(trackerId),
+            checklist: updatedRequirements
+          })
+        });
+        console.log("Tracker ID:", trackerId, " - Saving checklist:", updatedRequirements);
+
+        if (!res.ok) {
+          const err = await res.text();
+          console.error('❌ Failed to save checklist:', err);
+        } else {
+          console.log('✅ Checklist saved!');
+        }
+      } catch (err) {
+        console.error('❌ Error saving checklist:', err);
+      } finally {
+        setIsSaving(false);
+      }
+    }, 1000), // 1000ms = 1s debounce
+    [trackerId]
   );
 
+  // ✅ 3. Checkbox handler that triggers debounced save
+  const handleCheckboxChange = (index: number) => {
+    setRequirementsState(prev => {
+      const updated = prev.map((req, i) =>
+        i === index ? { ...req, checked: !req.checked } : req
+      );
+
+      saveRequirements(updated); // 👈 triggers debounced save
+      return updated;
+    });
+  };
+
+  // ✅ 4. Progress bar calculation
+  const checkedCount = requirementsState.filter(r => r.checked).length;
+  const totalCount = requirementsState.length;
+  const progressPercentage =
+    totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
+
+  // ✅ 5. Status badge styling
   const statusStyles = {
     open: {
       bg: 'bg-[#7DD27D]',
@@ -34,15 +104,12 @@ const BoardCard: React.FC<BoardCardProps> = ({
 
   const currentStatus = statusStyles[status];
 
-  const handleCheckboxChange = (index: number) => {
-    const newChecked = [...checkedRequirements];
-    newChecked[index] = !newChecked[index];
-    setCheckedRequirements(newChecked);
-  };
-
-  const checkedCount = checkedRequirements.filter(Boolean).length;
-  const totalCount = requirements.length;
-  const progressPercentage = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
+  // ✅ 6. Clean up debounce when unmounting
+  useEffect(() => {
+    return () => {
+      saveRequirements.cancel();
+    };
+  }, [saveRequirements]);
 
   return (
     <div 
@@ -67,7 +134,7 @@ const BoardCard: React.FC<BoardCardProps> = ({
 
           {/* Requirements Checklist */}
           <div className="flex flex-col gap-2">
-            {requirements.map((requirement, index) => (
+            {requirementsState.map((req, index) => (
               <label 
                 key={index} 
                 className="flex items-center gap-3 cursor-pointer group"
@@ -75,15 +142,15 @@ const BoardCard: React.FC<BoardCardProps> = ({
                 <div className="relative flex-shrink-0">
                   <input
                     type="checkbox"
-                    checked={checkedRequirements[index]}
+                    checked={req.checked}
                     onChange={() => handleCheckboxChange(index)}
                     className="appearance-none w-4 h-4 rounded-[3px] border-2 cursor-pointer transition-colors"
                     style={{
-                      borderColor: checkedRequirements[index] ? '#FBB507' : '#979797',
-                      backgroundColor: checkedRequirements[index] ? '#FBB507' : 'transparent'
+                      borderColor: req.checked ? '#FBB507' : '#979797',
+                      backgroundColor: req.checked ? '#FBB507' : 'transparent'
                     }}
                   />
-                  {checkedRequirements[index] && (
+                  {req.checked && (
                     <svg
                       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                       width="10"
@@ -102,7 +169,7 @@ const BoardCard: React.FC<BoardCardProps> = ({
                   )}
                 </div>
                 <span className="text-[13px] sm:text-[14px] md:text-[16px] leading-tight">
-                  {requirement}
+                  {req.item}
                 </span>
               </label>
             ))}
