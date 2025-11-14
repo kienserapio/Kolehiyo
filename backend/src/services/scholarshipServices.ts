@@ -1,7 +1,7 @@
 import { supabase } from '../utils/supabase';
 
 interface ChecklistItem {
-  text: string;
+  item: string;
   checked: boolean;
 }
 
@@ -223,7 +223,10 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
     const scholarship = await getPublicScholarshipDetails(scholarshipId);
     if (!scholarship) throw new Error('Scholarship not found');
 
-    const newChecklist: ChecklistItem[] = scholarship.scho_requirements.map((req) => ({ text: req, checked: false }));
+    const newChecklist: ChecklistItem[] = scholarship.scho_requirements.map((req) => ({ 
+      item: req, 
+      checked: false 
+    }));
 
     const defaultStatus = scholarship.application_status ?? 'Open'; 
 

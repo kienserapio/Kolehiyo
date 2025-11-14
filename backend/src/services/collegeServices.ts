@@ -7,7 +7,7 @@ interface EntranceExam {
 }
 
 interface ChecklistItem {
-  text: string;
+  item: string;
   checked: boolean;
 }
 
@@ -241,7 +241,7 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
     }
 
     const newChecklist: ChecklistItem[] = college.requirements.map((req) => ({
-      text: req,
+      item: req,
       checked: false,
     }));
 

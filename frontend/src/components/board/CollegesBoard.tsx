@@ -52,7 +52,7 @@ export default function CollegesBoard() {
           // Normalize: ensure each requirement is an object with name + checked
           const normalizedRequirements = Array.isArray(rawRequirements)
             ? rawRequirements.map((r: any) => {
-                if (typeof r === "string") return { item: r, checked: false };
+                let actualItem = typeof r.item === "object" && r.item !== null ? r.item.item : r.item ?? String(r);
 
                 const checkedValue =
                   r.checked === true ||
@@ -61,7 +61,7 @@ export default function CollegesBoard() {
                   r.checked === "t";
 
                 return {
-                  item: r.item ?? String(r),
+                  item: actualItem,
                   checked: checkedValue,
                 };
               })

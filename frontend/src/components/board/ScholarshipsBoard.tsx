@@ -45,15 +45,20 @@ export default function ScholarshipsBoard() {
 
         // ✅ Map tracked scholarships to board cards
         const boards = list.map((item: any) => {
+
+          console.log("Processing raw item:", item);
+
           const scholarship = item.scholarship ?? null; // nested scholarship data may be null
-          console.log("Processing scholarship item:", item);
+          console.log("Nested scholarship:", scholarship);
+          
           // use optional chaining to avoid accessing properties on null
-          const rawChecklist = scholarship?.checklist ?? item.checklist ?? [];
+          const rawChecklist = item.checklist ?? [];
+          console.log("Raw checklist for scholarship", rawChecklist);
 
           // Normalize checklist items
           const normalizedChecklist = Array.isArray(rawChecklist)
             ? rawChecklist.map((r: any) => {
-                if (typeof r === "string") return { item: r, checked: false };
+                let actualItem = typeof r.item === "object" && r.item !== null ? r.item.item : r.item ?? String(r);
 
                 const checkedValue =
                   r.checked === true ||
@@ -62,7 +67,7 @@ export default function ScholarshipsBoard() {
                   r.checked === "t";
 
                 return {
-                  item: r.item ?? String(r),
+                  item: actualItem,
                   checked: checkedValue,
                 };
               })
@@ -158,26 +163,30 @@ export default function ScholarshipsBoard() {
       {loading && <div className="py-6">Loading scholarships...</div>}
 
       {error && <div className="py-6 text-red-500">{error}</div>}
-
+      
       {/* Scholarship Cards */}
       <div className="flex flex-col gap-6">
-        {scholarships.map((scholarship) => (
-          <div key={scholarship.id} className="flex justify-start">
-            <BoardCard
-              type="scholarship"
-              trackerId={scholarship.trackerId}
-              universityName={scholarship.universityName}
-              address={scholarship.address}
-              logoUrl={scholarship.logoUrl}
-              requirements={scholarship.requirements.map((req) => ({
-                item: req.item,
-                checked: req.checked,
-              }))}
-              status={scholarship.status}
-              onRemove={() => handleRemoveCard(scholarship.id)}
-            />
-          </div>
-        ))}
+        {scholarships.map((scholarship) => {
+          console.log("Rendering scholarship:", scholarship);
+        
+          return (
+            <div key={scholarship.id} className="flex justify-start">
+              <BoardCard
+                type="scholarship"
+                trackerId={scholarship.trackerId}
+                universityName={scholarship.universityName}
+                address={scholarship.address}
+                logoUrl={scholarship.logoUrl}
+                requirements={scholarship.requirements.map((req) => ({
+                  item: req.item,
+                  checked: req.checked,
+                }))}
+                status={scholarship.status}
+                onRemove={() => handleRemoveCard(scholarship.id)}
+              />
+            </div>
+          );
+          })}
       </div>
 
       {/* Empty State */}
