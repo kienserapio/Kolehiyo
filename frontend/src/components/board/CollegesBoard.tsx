@@ -174,6 +174,7 @@ export default function CollegesBoard() {
         {colleges.map((college) => (
           <div key={college.id} className="flex justify-start">
             <BoardCard
+              type="college"
               trackerId={college.trackerId} // pass trackerId for updates
               universityName={college.universityName}
               address={college.address}

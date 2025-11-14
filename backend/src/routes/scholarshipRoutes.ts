@@ -17,11 +17,13 @@ const router = express.Router();
 // Public list
 router.get('/scholarships', wrap(listScholarshipsHandler));
 
+// Tracked scholarships for a user (requires auth)
+router.get('/scholarships/tracked', supabaseAuth, wrap(trackedScholarshipsHandler));
+
 // Single scholarship details
 router.get('/scholarships/:id', wrap(scholarshipDetailsHandler));
 
-// Tracked scholarships for a user (requires auth)
-router.get('/scholarships/tracked', supabaseAuth, wrap(trackedScholarshipsHandler));
+
 
 // Add to tracker
 router.post('/scholarships/tracked', supabaseAuth, validateBody(addScholarshipToTrackerSchema), wrap(addScholarshipToTrackerHandler));

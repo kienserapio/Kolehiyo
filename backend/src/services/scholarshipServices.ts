@@ -158,7 +158,7 @@ export const getTrackedScholarships = async (userId: string): Promise<Array<Trac
     const { data, error } = await supabase
       .from(trackerTable)
       .select(joinQuery)
-      .eq('user_id', userId);
+      .eq('auth_user_id', userId);
 
     if (error) {
       console.warn(`SUPABASE: getTrackedScholarships - table=${trackerTable} error=`, error.message);
@@ -168,21 +168,23 @@ export const getTrackedScholarships = async (userId: string): Promise<Array<Trac
     if (!data) return [];
 
     const tracked = data.map((row: any) => {
-      const s = row.scholarship ? {
+      const joined = row.scholarships;
+      
+      const s = joined ? {
         id: row.scholarship_id,
-        name: row.scholarship.name ?? '',
-        address: row.scholarship.address ?? '',
-        application_start: row.scholarship.application_start ?? '',
-        application_end: row.scholarship.application_end ?? '',
-        scho_type: row.scholarship.scho_type ?? '',
-        benefits: row.scholarship.benefits ?? '',
-        logo_url: row.scholarship.logo_url ?? '',
-        application_status: row.scholarship.application_status ?? '',
+        name: joined.name ?? '',
+        address: joined.address ?? '',
+        application_start: joined.application_start ?? '',
+        application_end: joined.application_end ?? '',
+        scho_type: joined.scho_type ?? '',
+        benefits: joined.benefits ?? '',
+        logo_url: joined.logo_url ?? '',
+        application_status: joined.application_status ?? '',
       } as PublicScholarshipCard : null;
 
       return {
         tracker_id: row.tracker_id ?? row.id ?? null,
-        user_id: row.user_id,
+        user_id: row.user_id ?? row.auth_user_id,
         scholarship_id: row.scholarship_id,
         status: row.status ?? 'Open',
         checklist: (Array.isArray(row.checklist) ? row.checklist : []) as ChecklistItem[],
@@ -205,7 +207,7 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
     const { data: existing, error: checkError } = await supabase
       .from(trackerTable)
       .select('tracker_id')
-      .eq('user_id', userId)
+      .eq('auth_user_id', userId)
       .eq('scholarship_id', scholarshipId)
       .limit(1);
 
@@ -228,7 +230,8 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
     const { data, error } = await supabase
       .from(trackerTable)
       .insert({
-        user_id: userId,
+        // only `auth_user_id` is used by the schema
+        auth_user_id: userId,
         scholarship_id: scholarshipId,
         status: defaultStatus,
         checklist: newChecklist,
@@ -253,7 +256,7 @@ export const removeScholarshipFromTracker = async (userId: string, scholarshipId
     const { data: existing, error: checkError } = await supabase
       .from(trackerTable)
       .select('*')
-      .eq('user_id', userId)
+      .eq('auth_user_id', userId)
       .eq('scholarship_id', scholarshipId)
       .limit(1);
 
@@ -279,7 +282,7 @@ export const removeScholarshipFromTracker = async (userId: string, scholarshipId
     const { data, error } = await supabase
       .from(trackerTable)
       .delete()
-      .match({ user_id: userId, scholarship_id: scholarshipId })
+      .match({ auth_user_id: userId, scholarship_id: scholarshipId })
       .select();
 
     if (error) throw new Error(`Failed to delete tracker row: ${error.message}`);
