@@ -34,7 +34,7 @@ const HeroSection = () => {
 
           {/* CTA Button with Link */}
           <div className="flex justify-center">
-            <Link to="/auth/sign_up" target="_blank" className="relative inline-block">
+            <Link to="/auth/sign_up" className="relative inline-block">
               <button
                 className="relative px-12 py-4 text-[20px] font-bold text-white overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
                 style={{

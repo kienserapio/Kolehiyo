@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const scholarshipTypes = [
   "Government",
@@ -28,6 +29,7 @@ const locations = [
 ];
 
 const ScholarshipSearchBar = () => {
+  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
@@ -45,7 +47,19 @@ const ScholarshipSearchBar = () => {
 
   const handleSearch = () => {
     console.log("Searching for:", selectedType, selectedLocation);
-    // Implement search/filter logic here
+    
+    const params = new URLSearchParams();
+
+    if (selectedType.trim()) {
+      params.set("type", selectedType.trim());
+    }
+
+    if (selectedLocation.trim()) {
+      params.set("location", selectedLocation.trim());
+    }
+
+    console.log("Navigating to with params:", params.toString());
+    navigate(`?${params.toString()}`);
   };
 
   return (

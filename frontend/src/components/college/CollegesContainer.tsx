@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CollegeCard from './CollegeCard';
 import CollegeDetails from './CollegeDetails';
+import { useSearchParams } from "react-router-dom"; // for search functionality
 
 // Fetch college data from the backend API instead of using the local JSON
 
@@ -10,6 +11,10 @@ export default function CollegesContainer() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [searchParams] = useSearchParams();
+  const filterUniversity = searchParams.get("university")?.toLowerCase() || "";
+  const filterAddress = searchParams.get("address")?.toLowerCase() || "";
 
   const handleCardClick = (college: any) => {
     const formattedCollege = {
@@ -83,6 +88,18 @@ export default function CollegesContainer() {
     fetchColleges();
   }, []);
 
+  const filteredColleges = colleges.filter((college) => {
+    const matchesUniversity = 
+    filterUniversity === "" ||
+    college.name.toLowerCase().includes(filterUniversity);
+
+    const matchesAddress = 
+    filterAddress === "" ||
+    college.address?.toLowerCase().includes(filterAddress);
+
+    return matchesAddress && matchesUniversity;
+  });
+
   return (
     <div className="py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-24">
       {/* Header positioned above the grid */}
@@ -102,7 +119,7 @@ export default function CollegesContainer() {
 
       {/* College Cards Grid */}
       <div className="max-w-[1450px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
-        {colleges.map((college: any) => (
+        {filteredColleges.map((college: any) => (
           <div key={college.id} className="flex justify-center lg:justify-start">
             <CollegeCard
               collegeId={college.id}

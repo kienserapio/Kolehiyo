@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ScholarshipCard from "@/components/scholarship/ScholarshipCard";
 import ScholarshipDetails from "@/components/scholarship/ScholarshipDetails";
-// import { getPublicScholarshipList } from "@/services/scholarshipServices"; // for future use if you want direct Supabase call
+import { useSearchParams } from "react-router-dom"; // for search functionality
 
 export default function ScholarshipContainer() {
   const [scholarships, setScholarships] = useState<any[]>([]);
@@ -9,6 +9,10 @@ export default function ScholarshipContainer() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [searchParams] = useSearchParams();
+  const filterType = searchParams.get("type")?.toLowerCase() || "";
+  const filterLocation = searchParams.get("location")?.toLowerCase() || "";
 
   const handleCardClick = (scholarship: any) => {
     setSelectedScholarship(scholarship);
@@ -25,15 +29,11 @@ export default function ScholarshipContainer() {
       setLoading(true);
       setError(null);
       try {
-        // Option A: through your API route (keep this if API handles caching/auth)
         const res = await fetch("/api/scholarships");
         if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
         const json = await res.json();
         setScholarships(json.data ?? []);
 
-        // Option B (if you want direct Supabase call later):
-        // const data = await getPublicScholarshipList();
-        // setScholarships(data);
       } catch (err: any) {
         console.error("Error fetching scholarships:", err);
         setError(err?.message ?? "Unknown error");
@@ -44,6 +44,18 @@ export default function ScholarshipContainer() {
 
     fetchScholarships();
   }, []);
+
+  const filteredScholarships = scholarships.filter((s) => {
+    const matchesType = 
+      filterType === "" ||
+      s.scho_type.toLowerCase().includes(filterType);
+
+    const matchesLocation = 
+      filterLocation === "" ||
+      s.address.toLowerCase().includes(filterLocation);
+
+    return matchesType && matchesLocation;
+  });
 
   return (
     <div className="py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-24">
@@ -61,7 +73,7 @@ export default function ScholarshipContainer() {
       {error && <div className="text-center py-8 text-red-500">{error}</div>}
 
       <div className="max-w-[1450px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
-        {scholarships.map((s) => (
+        {filteredScholarships.map((s) => (
           <div key={s.id} className="flex justify-center lg:justify-start">
             <ScholarshipCard
               id={s.id}

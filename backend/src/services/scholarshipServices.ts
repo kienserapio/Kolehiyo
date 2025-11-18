@@ -224,8 +224,8 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
     if (!scholarship) throw new Error('Scholarship not found');
 
     const newChecklist: ChecklistItem[] = scholarship.scho_requirements.map((req) => ({ 
-      item: req, 
-      checked: false 
+      item: req,
+      checked: false
     }));
 
     const defaultStatus = scholarship.application_status ?? 'Open'; 

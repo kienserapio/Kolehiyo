@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const universities = [
   "University of the Philippines",
@@ -29,6 +30,7 @@ const locations = [
   ];
 
 const CollegeSearchBar = () => {
+  const navigate = useNavigate();
   const [selectedUniversity, setSelectedUniversity] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
@@ -46,7 +48,20 @@ const CollegeSearchBar = () => {
 
   const handleSearch = () => {
     console.log("Searching for:", selectedUniversity, selectedLocation);
-    // Implement search action here
+    
+    const params = new URLSearchParams();
+
+    if (selectedUniversity.trim()) {
+      params.set("university", selectedUniversity.trim());
+    }
+
+    if (selectedLocation.trim()) {
+      params.set("address", selectedLocation.trim());
+    }
+
+    console.log("Navigating to with params:", params.toString());
+
+    navigate(`?${params.toString()}`);
   };
 
   return (
