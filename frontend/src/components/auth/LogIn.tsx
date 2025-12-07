@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/supabaseClient";
 import notify from '@/lib/notify';
@@ -14,7 +14,10 @@ export default function LogIn() {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = async (): Promise<void> => {
+  // Accept optional event so it works for form submit (Enter) and direct calls.
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    if (e) e.preventDefault();
+
     const newErrors: { [key: string]: string } = {};
 
     if (!email) newErrors.email = 'Email is required';
@@ -27,7 +30,7 @@ export default function LogIn() {
 
     if (Object.keys(newErrors).length > 0) return;
 
-    // ✅ Try signing in with Supabase
+    // Try signing in with Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -39,7 +42,7 @@ export default function LogIn() {
       return;
     }
 
-    // ✅ Get user info from the active session
+    // Get user info from the active session
     const {
       data: { user },
       error: userError,
@@ -51,7 +54,7 @@ export default function LogIn() {
       return;
     }
 
-    // ✅ Check if profile already exists
+    // Check if profile already exists
     const { data: existingProfile, error: selectError } = await supabase
       .from("users")
       .select("*")
@@ -62,7 +65,7 @@ export default function LogIn() {
       console.error("Error checking existing profile:", selectError);
     }
 
-    // ✅ If profile doesn't exist, create one
+    // If profile doesn't exist, create one
     if (!existingProfile) {
       const { error: insertError } = await supabase.from("users").insert({
         auth_user_id: user.id,
@@ -94,7 +97,7 @@ export default function LogIn() {
              rounded-[35px] flex flex-col items-center justify-center
              px-6 md:px-10 lg:px-12 py-8 z-30"
     >
-      <div className="w-full flex flex-col h-full justify-center">
+      <form className="w-full flex flex-col h-full justify-center" onSubmit={handleSubmit}>
         {/* Header */}
         <h1
           className="text-center mb-3 lg:mb-4 text-[32px] leading-tight 
@@ -148,7 +151,7 @@ export default function LogIn() {
 
         {/* Log In Button */}
         <button
-          onClick={handleSubmit}
+          type="submit"
           className="w-full py-3 rounded-full text-white font-bold text-lg mb-6 
                      bg-gradient-to-b from-[#1D5D95] to-[#004689]
                      hover:scale-[1.02] transition-transform shadow-lg active:scale-95"
@@ -163,7 +166,7 @@ export default function LogIn() {
             Sign Up
           </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 }

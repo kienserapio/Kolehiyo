@@ -33,8 +33,8 @@ const BoardCard: React.FC<BoardCardProps> = ({
   // ✅ Dynamic endpoint depending on card type
   const apiRoute =
     type === 'scholarship'
-      ? 'https://kolehiyo.onrender.com/api/scholarships/tracked/checklist'
-      : 'https://kolehiyo.onrender.com/api/colleges/tracked/checklist';
+      ? `${import.meta.env.VITE_API_URL}/api/scholarships/tracked/checklist`
+      : `${import.meta.env.VITE_API_URL}/api/colleges/tracked/checklist`;
 
   // ✅ Debounced save function
   const saveRequirements = useCallback(

@@ -74,19 +74,43 @@ export default function CollegesBoard({ onCardClick }: CollegesBoardProps) {
   }, []);
 
   const handleRemoveCard = async (id: string) => {
-    // ... (Your existing remove logic) ...
-    // Just copying what you had for brevity in this answer
     try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if(!session) return;
-        const collegeId = id.replace("college-", "");
-        await fetch(`${import.meta.env.VITE_API_URL}/api/colleges/tracked`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-            body: JSON.stringify({ userId: session.user.id, collegeId }),
-        });
-        setColleges(prev => prev.filter(c => c.id !== id));
-    } catch(e) { console.error(e); }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setError("You must be logged in to remove a college.");
+        return;
+      }
+
+      const userId = session.user.id;
+      const collegeId = id.replace("college-", "");
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/colleges/tracked`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId, collegeId }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText || String(res.status));
+        throw new Error(`Failed to delete college: ${res.status} ${text}`);
+      }
+
+      const json = await res.json();
+      notify.success("Removed college:", json.data);
+
+      // Update UI
+      const updatedColleges = colleges.filter((s) => s.id !== id);
+      setColleges(updatedColleges);
+    } catch (err) {
+      notify.error("❌ Error removing college:", err);
+      setError(err instanceof Error ? err.message : String(err));
+    }
   };
 
   // 2. Format Data for the Modal
@@ -137,7 +161,7 @@ export default function CollegesBoard({ onCardClick }: CollegesBoardProps) {
         </h2>
       </div>
 
-      {loading && <div className="py-6">Loading...</div>}
+      {loading && <div className="py-6">Loading colleges...</div>}
       {error && <div className="py-6 text-red-500">{error}</div>}
 
       <div className="flex flex-col gap-6">
@@ -157,8 +181,6 @@ export default function CollegesBoard({ onCardClick }: CollegesBoardProps) {
           </div>
         ))}
       </div>
-      
-      {/* Empty State ... */}
     </div>
   );
 }

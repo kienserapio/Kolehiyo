@@ -61,12 +61,12 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
 
   if (!isOpen) return null;
 
-  if (loading) // loading state, must edit later
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 text-white">
-        Loading scholarship details...
-      </div>
-    );
+  // if (loading) // loading state, must edit later
+  //   return (
+  //     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 text-white">
+  //       Loading scholarship details...
+  //     </div>
+  //   );
 
   if (error) // error state, must edit later
     return (

@@ -143,7 +143,7 @@ const Navbar = () => {
 
             <button
               onClick={openProfile}
-              className={`${linkColor} ${hoverColor} transition-colors font-medium`}
+              className={`${linkColor} ${hoverColor} transition-colors font-medium cursor-pointer`}
               aria-label="Open profile"
               disabled={loading}
             >

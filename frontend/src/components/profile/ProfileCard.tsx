@@ -105,7 +105,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                          p-2 sm:p-2.5 md:p-3 
                          active:opacity-70
                          w-[103px] sm:w-[130px] md:w-[155px]
-                         h-[30px] sm:h-[37px] md:h-[45px]"
+                         h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
               style={{
                 background: 'linear-gradient(180deg, #1D5D95 0%, #004689 100%)'
               }}

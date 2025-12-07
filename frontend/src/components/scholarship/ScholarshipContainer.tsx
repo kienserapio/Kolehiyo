@@ -69,7 +69,7 @@ export default function ScholarshipContainer() {
         </h2>
       </div>
 
-      {loading && <div className="text-center py-8">Loading scholarships...</div>}
+      {/* {loading && <div className="text-center py-8">Loading scholarships...</div>} */}
       {error && <div className="text-center py-8 text-red-500">{error}</div>}
 
       <div className="max-w-[1450px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
