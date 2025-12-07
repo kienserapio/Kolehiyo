@@ -62,7 +62,7 @@ export default function CollegesContainer() {
       setError(null);
       try {
         // Adjust base URL if your backend is on another host/port (e.g. http://localhost:5000)
-        const res = await fetch('/api/colleges');
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/colleges`);
         if (!res.ok) {
           const text = await res.text().catch(() => res.statusText || String(res.status));
           throw new Error(`Failed to fetch colleges: ${res.status} ${text}`);
