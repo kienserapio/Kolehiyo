@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase } from '@/supabaseClient';
+import notify from '@/lib/notify';
 
 export interface CollegeCardProps {
   universityName: string;
@@ -52,11 +53,11 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
       } = await supabase.auth.getSession();
 
       if (!session) {
-        alert("You must be logged in to add to your board.");
+        notify.error("You must be logged in to add to your board.");
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/colleges/tracked", { // 👈 use your Express backend URL
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/colleges/tracked`, { // 👈 use your Express backend URL
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,10 +73,10 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
         throw new Error(msg);
       }
 
-      alert(`${universityName} has been added to your board!`);
+      notify.success(`${universityName} has been added to your board!`);
     } catch (err) {
       console.error("Add to board failed:", err);
-      alert("Failed to add to board.");
+      notify.error("Failed to add to board.");
     }
   };
 
@@ -150,7 +151,7 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
             font-bold text-white rounded-[25px] transition-opacity hover:opacity-90
             text-sm sm:text-base flex-1 sm:flex-initial px-2 py-2
             w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px]
-            h-[80px] sm:h-[70px] md:h-[50px]
+            h-[80px] sm:h-[70px] md:h-[50px] active:opacity-70
         "   
         style={{
             background: 'linear-gradient(180deg, #1D5D95 0%, #004689 100%)'

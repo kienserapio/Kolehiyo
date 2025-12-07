@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BoardCard from "./BoardCard";
 import { supabase } from "@/supabaseClient";
+import notify from '@/lib/notify';
 
 // 1. Define the prop interface
 interface ScholarshipsBoardProps {
@@ -22,8 +23,10 @@ export default function ScholarshipsBoard({ onCardClick }: ScholarshipsBoardProp
           setError("You must be logged in."); setLoading(false); return;
         }
 
-        const res = await fetch("http://localhost:5000/api/scholarships/tracked", {
-          headers: { Authorization: `Bearer ${session.access_token}` },
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/scholarships/tracked`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
         });
 
         if (!res.ok) throw new Error("Failed");
@@ -73,16 +76,42 @@ export default function ScholarshipsBoard({ onCardClick }: ScholarshipsBoardProp
   // ... (handleRemoveCard remains the same) ...
   const handleRemoveCard = async (id: string) => {
     try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if(!session) return;
-        const scholarshipId = id.replace("scholarship-", "");
-        await fetch("http://localhost:5000/api/scholarships/tracked", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-            body: JSON.stringify({ userId: session.user.id, scholarshipId }),
-        });
-        setScholarships(prev => prev.filter(s => s.id !== id));
-    } catch(e) { console.error(e); }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setError("You must be logged in to remove a scholarship.");
+        return;
+      }
+
+      const userId = session.user.id;
+      const scholarshipId = id.replace("scholarship-", "");
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/scholarships/tracked`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId, scholarshipId }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText || String(res.status));
+        throw new Error(`Failed to delete scholarship: ${res.status} ${text}`);
+      }
+
+      const json = await res.json();
+      notify.success("Removed scholarship:", json.data);
+
+      // Update UI
+      const updatedScholarships = scholarships.filter((s) => s.id !== id);
+      setScholarships(updatedScholarships);
+    } catch (err) {
+      console.error("❌ Error removing scholarship:", err);
+      setError(err instanceof Error ? err.message : String(err));
+    }
   };
 
   return (

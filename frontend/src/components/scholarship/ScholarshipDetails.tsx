@@ -43,7 +43,7 @@ const ScholarshipDetails: React.FC<ScholarshipDetailsProps> = ({
       setError(null);
 
       try {
-        const res = await fetch(`/api/scholarships/${scholarshipId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/scholarships/${scholarshipId}`);
         if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
 
         const json = await res.json();

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from "@/supabaseClient";
+import notify from '@/lib/notify';
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>('');
@@ -80,7 +81,7 @@ export default function LogIn() {
       console.log("Profile already exists, skipping insert.");
     }
 
-    alert("Login successful! Redirecting...");
+    notify.success("Login successful! Welcome back!");
     navigate("/college");
   };
 

@@ -33,8 +33,8 @@ const BoardCard: React.FC<BoardCardProps> = ({
   // ✅ Dynamic endpoint depending on card type
   const apiRoute =
     type === 'scholarship'
-      ? 'http://localhost:5000/api/scholarships/tracked/checklist'
-      : 'http://localhost:5000/api/colleges/tracked/checklist';
+      ? 'https://kolehiyo.onrender.com/api/scholarships/tracked/checklist'
+      : 'https://kolehiyo.onrender.com/api/colleges/tracked/checklist';
 
   // ✅ Debounced save function
   const saveRequirements = useCallback(
@@ -184,7 +184,10 @@ const BoardCard: React.FC<BoardCardProps> = ({
 
         <button
           onClick={(e) => { e.stopPropagation(); onRemove?.(); }}
-          className="font-bold text-white rounded-[25px] transition-opacity hover:opacity-90 text-sm sm:text-base flex-1 sm:flex-initial px-2 py-2 w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] h-[80px] sm:h-[70px] md:h-[50px]"
+          className="font-bold text-white rounded-[25px] transition-opacity hover:opacity-90
+                     text-sm sm:text-base flex-1 sm:flex-initial px-2 py-2
+                     w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px]
+                     h-[80px] sm:h-[70px] md:h-[50px] active:opacity-70"
           style={{ background: 'linear-gradient(180deg, #1D5D95 0%, #004689 100%)' }}
         >
           Remove

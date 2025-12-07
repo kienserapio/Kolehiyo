@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CollegeCard from './CollegeCard';
 import CollegeDetails from './CollegeDetails';
 import { useSearchParams } from "react-router-dom"; // for search functionality
+import notify from '@/lib/notify';
 
 // Fetch college data from the backend API instead of using the local JSON
 

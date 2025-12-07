@@ -75,7 +75,6 @@ const CollegeSearchBar = () => {
         <div className="relative w-full lg:w-[350px]">
           <div
             className="flex items-center gap-3 border-[2px] lg:border-[3px] border-[#1E1E1E40] rounded-full px-3 py-3 lg:py-4 cursor-pointer"
-            onClick={() => setShowUniversityDropdown(!showUniversityDropdown)}
           >
             <Search size={24} className="text-[#1E1E1E40]" />
             <input

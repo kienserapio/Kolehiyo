@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { supabase } from '@/supabaseClient'
+import notify from '@/lib/notify';
 
 export default function SignUp() {
   const [email, setEmail] = useState<string>('');
@@ -40,12 +41,12 @@ const navigate = useNavigate();
     });
 
     if (error) {
-      console.error("Sign-up error:", error.message);
+      notify.error("Sign-up error:", error.message);
       setErrors({ general: error.message });
       return;
     }
 
-    alert("Account created! Please check your email for verification before logging in.");
+    notify.success("Account created! Please check your email for verification before logging in.");
     navigate("/auth/onboarding");
   };
   const handleLogin = (): void => {

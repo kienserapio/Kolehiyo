@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BoardCard from "./BoardCard";
 import { supabase } from "@/supabaseClient";
+import notify from '@/lib/notify';
 
 // 1. Accept the onCardClick prop
 interface CollegesBoardProps {
@@ -24,8 +25,10 @@ export default function CollegesBoard({ onCardClick }: CollegesBoardProps) {
            setError("You must be logged in."); setLoading(false); return;
         }
 
-        const res = await fetch("http://localhost:5000/api/colleges/tracked", {
-          headers: { Authorization: `Bearer ${session.access_token}` },
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/colleges/tracked`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
         });
 
         if (!res.ok) throw new Error("Failed");
@@ -77,7 +80,7 @@ export default function CollegesBoard({ onCardClick }: CollegesBoardProps) {
         const { data: { session } } = await supabase.auth.getSession();
         if(!session) return;
         const collegeId = id.replace("college-", "");
-        await fetch("http://localhost:5000/api/colleges/tracked", {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/colleges/tracked`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
             body: JSON.stringify({ userId: session.user.id, collegeId }),

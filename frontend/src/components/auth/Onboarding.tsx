@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { User } from '@supabase/supabase-js';
 
 import { supabase } from "@/supabaseClient";
+import notify from "@/lib/notify";
 
 // Extend the Supabase User type to include our custom fields
 interface DbUser extends User {
@@ -88,7 +89,7 @@ const navigate = useNavigate();
     // Get the currently signed-in user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
-      alert("Session expired. Please sign in again.");
+      notify.error("Session expired. Please sign in again.");
       navigate("/auth/log_in");
       return;
     }
@@ -109,10 +110,10 @@ const navigate = useNavigate();
 
     if (updateError) {
       console.error(updateError);
-      alert("Error updating your details. Please try again.");
+      notify.error("Error updating your details. Please try again.");
     } else {
-      alert("Profile saved successfully!");
-      navigate("/auth/log_in"); // or wherever your app proceeds next
+      notify.success("Profile saved successfully!");
+      navigate("/college"); 
     }
   };
 
