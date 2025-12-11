@@ -60,26 +60,38 @@ export const trackedCollegesHandler = async (req: Request, res: Response) => {
 
 // Handler: POST /api/colleges/tracked  { userId, collegeId }
 export const addCollegeToTrackerHandler = async (req: Request, res: Response) => {
+  console.log("\n=== ADD COLLEGE TO TRACKER ===");
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  console.log("User from middleware:", (req as any).user);
+  console.log("UserId from middleware:", (req as any).userId);
+  
   const userIdFromReq = (req as any).userId as string | undefined;
   const collegeId = req.body.collegeId as string | undefined;
   const userId = String(userIdFromReq ?? req.body.userId ?? '');
-  if (!userId || !collegeId) return res.status(400).json({ error: 'userId and collegeId are required' });
-
-  console.log("Incoming body:", req.body);
-  console.log("User ID from token:", (req as any).userId);
+  
+  console.log("Extracted userId:", userId);
+  console.log("Extracted collegeId:", collegeId);
+  
+  if (!userId || !collegeId) {
+    console.error("❌ Missing required fields:", { userId: !!userId, collegeId: !!collegeId });
+    return res.status(400).json({ error: 'userId and collegeId are required' });
+  }
 
   try {
-    console.log("Inserting collegeId:", collegeId, "for user:", userId);
+    console.log("✅ Attempting to insert collegeId:", collegeId, "for user:", userId);
     const created = await addCollegeToTracker(String(userId), String(collegeId));
-    console.log("Inserting collegeId:", collegeId, "for user:", userId);
+    console.log("✅ Successfully inserted college:", created);
     return res.status(201).json({ data: created });
   } catch (err: any) {
-    console.error("addCollegeToTrackerHandler error:", err);
+    console.error("❌ addCollegeToTrackerHandler error:");
+    console.error("Error message:", err?.message);
+    console.error("Error stack:", err?.stack);
 
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({ error: err.message, details: err.details });
     }
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error', message: err?.message, details: err?.stack });
   }
 };
 

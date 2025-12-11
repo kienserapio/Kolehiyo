@@ -223,7 +223,7 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
       .from(trackerTable)
       .select('tracker_id')
       .eq('auth_user_id', userId)
-      .eq('college_id', collegeId)
+      .eq('college_id', Number(collegeId))
       .limit(1);
 
     if (checkError) {
@@ -240,10 +240,18 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
       throw new Error('College not found');
     }
 
-    const newChecklist: ChecklistItem[] = college.requirements.map((req) => ({
-      item: req,
-      checked: false,
-    }));
+    // Safely handle requirements - ensure it's an array
+    const requirements = Array.isArray(college.requirements) 
+      ? college.requirements 
+      : (college.requirements ? [college.requirements] : []);
+    
+    const newChecklist: ChecklistItem[] = requirements.map((req) => {
+      // Requirements might already be objects {item, checked} or just strings
+      if (typeof req === 'object' && req !== null && 'item' in req) {
+        return { item: String(req.item), checked: false };
+      }
+      return { item: typeof req === 'string' ? req : String(req), checked: false };
+    });
 
     const defaultStatus = college.application_status ?? 'Open'; 
 
@@ -251,7 +259,7 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
       .from(trackerTable)
       .insert({
         auth_user_id: userId,
-        college_id: collegeId,
+        college_id: Number(collegeId),
         status: defaultStatus,
         checklist: newChecklist, 
         progress: 0, 

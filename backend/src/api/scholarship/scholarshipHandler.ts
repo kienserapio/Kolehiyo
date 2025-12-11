@@ -66,14 +66,22 @@ export const addScholarshipToTrackerHandler = async (req: Request, res: Response
   if (!userId || !scholarshipId) return res.status(400).json({ error: 'userId and scholarshipId are required' });
 
   try {
+    console.log("\n=== ADD SCHOLARSHIP TO TRACKER ===");
+    console.log("Body:", req.body);
+    console.log("UserId from middleware:", (req as any).userId);
+    console.log("Extracted userId:", userId);
+    console.log("Extracted scholarshipId:", scholarshipId);
+    console.log("Attempting to insert scholarshipId:", scholarshipId, "for user:", userId);
     const created = await addScholarshipToTracker(String(userId), String(scholarshipId));
+    console.log("✅ Successfully inserted scholarship:", created);
     return res.status(201).json({ data: created });
   } catch (err: any) {
-    console.error('addScholarshipToTrackerHandler error:', err?.message ?? err);
+    console.error('❌ addScholarshipToTrackerHandler error:', err?.message);
+    console.error('Stack:', err?.stack);
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({ error: err.message, details: err.details });
     }
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error', message: err?.message, stack: err?.stack });
   }
 };
 

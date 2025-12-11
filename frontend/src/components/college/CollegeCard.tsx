@@ -57,19 +57,27 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
         return;
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/colleges/tracked`, { // 👈 use your Express backend URL
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (!apiUrl) {
+        console.error("VITE_API_URL is not defined");
+        notify.error("Configuration error: API URL not set");
+        return;
+      }
+
+      const response = await fetch(`${apiUrl}/api/colleges/tracked`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`, // ✅ include token
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
-          collegeId: collegeId.toString(), // adjust field name
+          collegeId: collegeId.toString(),
         }),
       });
 
       if (!response.ok) {
         const msg = await response.text();
+        console.error("Server error:", msg);
         throw new Error(msg);
       }
 
@@ -118,11 +126,17 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
 
         {/* Right: Logo */}
         <div className="flex-shrink-0">
-          <img 
-            src={logoUrl} 
-            alt={`${universityName} logo`}
-            className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain"
-          />
+          {logoUrl ? (
+            <img 
+              src={logoUrl} 
+              alt={`${universityName} logo`}
+              className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain"
+            />
+          ) : (
+            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span className="text-gray-400 text-xs">No Logo</span>
+            </div>
+          )}
         </div>
       </div>
 

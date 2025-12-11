@@ -57,7 +57,14 @@ const ScholarshipCard: React.FC<ScholarshipCardProps> = ({
         return;
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/scholarships/tracked`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (!apiUrl) {
+        console.error("VITE_API_URL is not defined");
+        notify.error("Configuration error: API URL not set");
+        return;
+      }
+
+      const response = await fetch(`${apiUrl}/api/scholarships/tracked`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,12 +72,13 @@ const ScholarshipCard: React.FC<ScholarshipCardProps> = ({
         },
         body: JSON.stringify({
           userId: user.id,
-          scholarshipId: id.toString(), // field name matches backend route
+          scholarshipId: id.toString(),
         }),
       });
 
       if (!response.ok) {
         const msg = await response.text();
+        console.error("Server error:", msg);
         throw new Error(msg);
       }
 
@@ -111,11 +119,17 @@ const ScholarshipCard: React.FC<ScholarshipCardProps> = ({
         </div>
 
         <div className="flex-shrink-0">
-          <img
-            src={logo_url}
-            alt={`${name} logo`}
-            className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain"
-          />
+          {logo_url ? (
+            <img
+              src={logo_url}
+              alt={`${name} logo`}
+              className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain"
+            />
+          ) : (
+            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span className="text-gray-400 text-xs">No Logo</span>
+            </div>
+          )}
         </div>
       </div>
 

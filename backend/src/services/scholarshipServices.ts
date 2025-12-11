@@ -208,7 +208,7 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
       .from(trackerTable)
       .select('tracker_id')
       .eq('auth_user_id', userId)
-      .eq('scholarship_id', scholarshipId)
+      .eq('scholarship_id', Number(scholarshipId))
       .limit(1);
 
     if (checkError) {
@@ -223,10 +223,18 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
     const scholarship = await getPublicScholarshipDetails(scholarshipId);
     if (!scholarship) throw new Error('Scholarship not found');
 
-    const newChecklist: ChecklistItem[] = scholarship.scho_requirements.map((req) => ({ 
-      item: req,
-      checked: false
-    }));
+    // Safely handle requirements - ensure it's an array
+    const requirements = Array.isArray(scholarship.scho_requirements) 
+      ? scholarship.scho_requirements 
+      : (scholarship.scho_requirements ? [scholarship.scho_requirements] : []);
+    
+    const newChecklist: ChecklistItem[] = requirements.map((req) => {
+      // Requirements might already be objects {item, checked} or just strings
+      if (typeof req === 'object' && req !== null && 'item' in req) {
+        return { item: String(req.item), checked: false };
+      }
+      return { item: typeof req === 'string' ? req : String(req), checked: false };
+    });
 
     const defaultStatus = scholarship.application_status ?? 'Open'; 
 
@@ -235,7 +243,7 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
       .insert({
         // only `auth_user_id` is used by the schema
         auth_user_id: userId,
-        scholarship_id: scholarshipId,
+        scholarship_id: Number(scholarshipId),
         status: defaultStatus,
         checklist: newChecklist,
         progress: 0,
