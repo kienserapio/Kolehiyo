@@ -245,9 +245,9 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
       ? college.requirements 
       : (college.requirements ? [college.requirements] : []);
     
-    const newChecklist: ChecklistItem[] = requirements.map((req) => {
+    const newChecklist: ChecklistItem[] = requirements.map((req: any) => {
       // Requirements might already be objects {item, checked} or just strings
-      if (typeof req === 'object' && req !== null && 'item' in req) {
+      if (typeof req === 'object' && req !== null && req.item) {
         return { item: String(req.item), checked: false };
       }
       return { item: typeof req === 'string' ? req : String(req), checked: false };

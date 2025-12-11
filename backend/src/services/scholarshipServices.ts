@@ -228,9 +228,9 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
       ? scholarship.scho_requirements 
       : (scholarship.scho_requirements ? [scholarship.scho_requirements] : []);
     
-    const newChecklist: ChecklistItem[] = requirements.map((req) => {
+    const newChecklist: ChecklistItem[] = requirements.map((req: any) => {
       // Requirements might already be objects {item, checked} or just strings
-      if (typeof req === 'object' && req !== null && 'item' in req) {
+      if (typeof req === 'object' && req !== null && req.item) {
         return { item: String(req.item), checked: false };
       }
       return { item: typeof req === 'string' ? req : String(req), checked: false };
