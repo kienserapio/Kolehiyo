@@ -1,4 +1,15 @@
 import { supabase } from '../utils/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// 1. Initialize the Admin Client (Bypasses RLS)
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL; // Adjust based on your env var name
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment variables.");
+}
+
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 interface EntranceExam {
     exam_date_start: string;
@@ -219,7 +230,7 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
   const trackerTable = 'user_college_tracker';
 
   try {
-    const { data: existing, error: checkError } = await supabase
+    const { data: existing, error: checkError } = await supabaseAdmin
       .from(trackerTable)
       .select('tracker_id')
       .eq('auth_user_id', userId)
@@ -255,7 +266,7 @@ export const addCollegeToTracker = async (userId: string, collegeId: string) => 
 
     const defaultStatus = college.application_status ?? 'Open'; 
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .insert({
         auth_user_id: userId,
