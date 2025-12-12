@@ -64,6 +64,8 @@ const ScholarshipCard: React.FC<ScholarshipCardProps> = ({
         return;
       }
 
+      console.log("Bearer", `Bearer ${session.access_token}`)
+
       const response = await fetch(`${apiUrl}/api/scholarships/tracked`, {
         method: "POST",
         headers: {
@@ -71,10 +73,11 @@ const ScholarshipCard: React.FC<ScholarshipCardProps> = ({
           Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
-          userId: user.id,
           scholarshipId: id.toString(),
         }),
       });
+
+      console.log("Bearer", `Bearer ${session.access_token}`)
 
       if (!response.ok) {
         const msg = await response.text();

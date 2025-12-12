@@ -1,4 +1,15 @@
 import { supabase } from '../utils/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// 1. Initialize the Admin Client (Bypasses RLS)
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL; // Adjust based on your env var name
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment variables.");
+}
+
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 interface ChecklistItem {
   item: string;
@@ -204,7 +215,7 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
   const trackerTable = 'user_scholarship_tracker';
 
   try {
-    const { data: existing, error: checkError } = await supabase
+    const { data: existing, error: checkError } = await supabaseAdmin
       .from(trackerTable)
       .select('tracker_id')
       .eq('auth_user_id', userId)
@@ -238,10 +249,9 @@ export const addScholarshipToTracker = async (userId: string, scholarshipId: str
 
     const defaultStatus = scholarship.application_status ?? 'Open'; 
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .insert({
-        // only `auth_user_id` is used by the schema
         auth_user_id: userId,
         scholarship_id: Number(scholarshipId),
         status: defaultStatus,
