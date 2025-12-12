@@ -166,7 +166,7 @@ export const getTrackedScholarships = async (userId: string): Promise<Array<Trac
   `;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .select(joinQuery)
       .eq('auth_user_id', userId);
@@ -274,7 +274,7 @@ export const removeScholarshipFromTracker = async (userId: string, scholarshipId
   const trackerTable = 'user_scholarship_tracker';
 
   try {
-    const { data: existing, error: checkError } = await supabase
+    const { data: existing, error: checkError } = await supabaseAdmin
       .from(trackerTable)
       .select('*')
       .eq('auth_user_id', userId)
@@ -289,7 +289,7 @@ export const removeScholarshipFromTracker = async (userId: string, scholarshipId
     const trackerId = trackerRow.tracker_id ?? trackerRow.id ?? null;
 
     if (trackerId != null) {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from(trackerTable)
         .delete()
         .eq('tracker_id', trackerId)
@@ -300,7 +300,7 @@ export const removeScholarshipFromTracker = async (userId: string, scholarshipId
       return data;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .delete()
       .match({ auth_user_id: userId, scholarship_id: scholarshipId })
@@ -324,7 +324,7 @@ export const updateScholarshipTrackerChecklist = async (
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .update({ checklist: newChecklist, progress: progress })
       .eq('tracker_id', trackerId)

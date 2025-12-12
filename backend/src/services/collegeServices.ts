@@ -179,7 +179,7 @@ export const getTrackedColleges = async (userId: string): Promise<Array<TrackedC
   `;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .select(joinQuery)
       .eq('auth_user_id', userId);
@@ -293,7 +293,7 @@ export const removeCollegeFromTracker = async (userId: string, collegeId: string
   const trackerTable = 'user_college_tracker';
 
   try {
-    const { data: existing, error: checkError } = await supabase
+    const { data: existing, error: checkError } = await supabaseAdmin
       .from(trackerTable)
       .select('*')
       .eq('auth_user_id', userId)
@@ -312,7 +312,7 @@ export const removeCollegeFromTracker = async (userId: string, collegeId: string
     const trackerId = trackerRow.tracker_id ?? trackerRow.id ?? null;
 
     if (trackerId != null) {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from(trackerTable)
         .delete()
         .eq('tracker_id', trackerId)
@@ -326,7 +326,7 @@ export const removeCollegeFromTracker = async (userId: string, collegeId: string
       return data;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .delete()
       .match({ user_id: userId, college_id: collegeId })
@@ -353,7 +353,7 @@ export const updateTrackerChecklist = async (
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from(trackerTable)
       .update({ 
         checklist: newChecklist,
