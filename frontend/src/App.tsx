@@ -11,6 +11,7 @@
   import Onboarding from "./pages/auth/onboarding";
   import Scholarship from "./pages/scholarship";
   import Board from "./pages/board";
+  import EnableMFA from "./components/auth/EnableMFA";
 
   const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@
             <Route path="/auth/onboarding" element={<Onboarding />} />
             <Route path="/scholarship" element={<Scholarship />} />
             <Route path="/board" element={<Board />} />
+            <Route path="/auth/enable_mfa" element={<EnableMFA />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

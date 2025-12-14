@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 
 export interface ProfileCardProps {
   isOpen: boolean;
@@ -19,6 +20,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   userData,
   onSignOut
 }) => {
+  const navigate = useNavigate(); // 2. Initialize hook
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -44,9 +47,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <div className="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none px-4 sm:px-6 md:px-8">
         <div
           className="bg-white rounded-[35px] md:rounded-[35px] sm:rounded-[25px] pointer-events-auto 
-                     w-full max-w-[calc(725px/1.5)] md:max-w-[725px]
-                     h-auto md:h-[500px]
-                     p-6 sm:p-8 md:p-12"
+                      w-full max-w-[calc(725px/1.5)] md:max-w-[725px]
+                      h-auto md:h-[500px]
+                      p-6 sm:p-8 md:p-12"
           style={{
             boxShadow: '0px 4px 50px rgba(0, 0, 0, 0.3)'
           }}
@@ -95,17 +98,34 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                   Current Academic Strand
                 </p>
               </div>
+
+              {/* 3. New MFA Button */}
+              <button
+                onClick={() => navigate("/auth/enable_mfa")}
+                className="mt-2 font-bold text-white rounded-full transition-opacity hover:opacity-90 
+                           text-[11px] sm:text-[13px] md:text-base 
+                           p-2 sm:p-2.5 md:p-3 
+                           active:opacity-70
+                           w-full sm:w-[130px] md:w-[155px]
+                           h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
+                style={{
+                  // Using a slightly different gradient (Grey/Dark) to differentiate from Sign Out
+                  background: 'linear-gradient(180deg, #4B5563 0%, #1F2937 100%)' 
+                }}
+              >
+                Enable MFA
+              </button>
             </div>
 
             {/* Sign Out Button */}
             <button
               onClick={onSignOut}
               className="font-bold text-white rounded-full transition-opacity hover:opacity-90 
-                         text-[11px] sm:text-[13px] md:text-base 
-                         p-2 sm:p-2.5 md:p-3 
-                         active:opacity-70
-                         w-[103px] sm:w-[130px] md:w-[155px]
-                         h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
+                           text-[11px] sm:text-[13px] md:text-base 
+                           p-2 sm:p-2.5 md:p-3 
+                           active:opacity-70
+                           w-[103px] sm:w-[130px] md:w-[155px]
+                           h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
               style={{
                 background: 'linear-gradient(180deg, #1D5D95 0%, #004689 100%)'
               }}
