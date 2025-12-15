@@ -112,14 +112,16 @@ const CollegeSearchBar = () => {
             onClick={() => setShowLocationDropdown(!showLocationDropdown)}
           >
             <MapPin size={24} className="text-[#1E1E1E40]" />
-            <input
-              type="text"
-              placeholder="Anywhere"
-              className="outline-none bg-transparent w-full text-base lg:text-lg placeholder:text-gray-500"
-              value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-            />
+              <input
+                type="text"
+                placeholder="Anywhere"
+                readOnly
+                aria-haspopup="listbox"
+                aria-expanded={showLocationDropdown}
+                className="outline-none bg-transparent w-full text-base lg:text-lg placeholder:text-gray-500 cursor-pointer"
+                value={selectedLocation}
+                onClick={(e) => { e.stopPropagation(); setShowLocationDropdown(!showLocationDropdown); }}
+              />
           </div>
           {showLocationDropdown && (
             <ul className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-lg mt-1 max-h-48 overflow-y-auto shadow-xl z-50">

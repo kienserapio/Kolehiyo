@@ -61,7 +61,7 @@ const Navbar = () => {
           </span>
 
           {/* Log In */}
-              <Link to="/auth/log_in" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
+              <Link to="/auth/log_in" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
                 <CircleUserRound size={24} />   
               </Link>
         </div>
@@ -117,7 +117,7 @@ const Navbar = () => {
             </a>
 
             <div className="flex gap-4 pt-2">
-              <Link to="/auth/log_in" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
+              <Link to="/auth/log_in" rel="noopener noreferrer" className="text-white hover:text-blue-200 transition-colors">
                 <CircleUserRound size={24} />   
               </Link>
             </div>

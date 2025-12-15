@@ -107,11 +107,17 @@ const CollegeDetails: React.FC<CollegeDetailsProps> = ({ isOpen, onClose, colleg
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center h-full gap-3 lg:gap-0">
             {/* Left: Logo and Info */}
             <div className="flex gap-4 items-center flex-1">
-              <img
-                src={college.logoUrl}
-                alt={`${college.universityName} logo`}
-                className="w-20 h-20 object-contain flex-shrink-0"
-              />
+              <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
+                {college.logoUrl ? (
+                  <img
+                    src={college.logoUrl}
+                    alt={`${college.universityName} logo`}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <span className="text-gray-400 text-xs">No Logo</span>
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <h2 className="text-[18px] font-bold text-[#1E1E1E] leading-tight truncate">
                   {college.universityName}
@@ -130,7 +136,7 @@ const CollegeDetails: React.FC<CollegeDetailsProps> = ({ isOpen, onClose, colleg
 
                   {/* Apply Now beside status on mobile, stays right on desktop */}
                   <a
-                    href={college.admissionsUrl}
+                    href={(college as any).official_link || (college as any).officialLink || college.admissionsUrl || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-bold text-white rounded-[25px] transition-opacity hover:opacity-90 flex items-center justify-center flex-shrink-0
@@ -149,7 +155,7 @@ const CollegeDetails: React.FC<CollegeDetailsProps> = ({ isOpen, onClose, colleg
 
             {/* Right: Apply Now (Desktop Only) */}
             <a
-              href={college.admissionsUrl}
+              href={(college as any).official_link || (college as any).officialLink || college.admissionsUrl || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden lg:flex font-bold text-white rounded-[25px] transition-opacity hover:opacity-90 items-center justify-center flex-shrink-0

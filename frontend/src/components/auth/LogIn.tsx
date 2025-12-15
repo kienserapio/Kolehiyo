@@ -10,8 +10,82 @@ export default function LogIn() {
   const [mfaCode, setMfaCode] = useState<string>(''); // New state for the code
   const [showMfaInput, setShowMfaInput] = useState<boolean>(false); // Toggle views
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLockedOut, setIsLockedOut] = useState<boolean>(false);
+  const [remainingTime, setRemainingTime] = useState<number>(0);
   
   const navigate = useNavigate();
+
+  // --- BRUTE FORCE PROTECTION ---
+  const MAX_ATTEMPTS = 5;
+  const LOCKOUT_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  const getFailedAttempts = (): number => {
+    const attempts = localStorage.getItem('loginAttempts');
+    return attempts ? parseInt(attempts) : 0;
+  };
+
+  const getLockoutTime = (): number | null => {
+    const time = localStorage.getItem('lockoutTime');
+    return time ? parseInt(time) : null;
+  };
+
+  const incrementFailedAttempts = () => {
+    const attempts = getFailedAttempts() + 1;
+    localStorage.setItem('loginAttempts', attempts.toString());
+    
+    if (attempts >= MAX_ATTEMPTS) {
+      const lockoutTime = Date.now();
+      localStorage.setItem('lockoutTime', lockoutTime.toString());
+      setIsLockedOut(true);
+      startLockoutTimer();
+    }
+  };
+
+  const resetFailedAttempts = () => {
+    localStorage.removeItem('loginAttempts');
+    localStorage.removeItem('lockoutTime');
+    setIsLockedOut(false);
+    setRemainingTime(0);
+  };
+
+  const checkLockoutStatus = () => {
+    const lockoutTime = getLockoutTime();
+    if (!lockoutTime) return false;
+
+    const elapsed = Date.now() - lockoutTime;
+    if (elapsed < LOCKOUT_DURATION) {
+      setIsLockedOut(true);
+      setRemainingTime(Math.ceil((LOCKOUT_DURATION - elapsed) / 1000));
+      return true;
+    } else {
+      resetFailedAttempts();
+      return false;
+    }
+  };
+
+  const startLockoutTimer = () => {
+    const lockoutTime = getLockoutTime();
+    if (!lockoutTime) return;
+
+    const updateTimer = () => {
+      const elapsed = Date.now() - lockoutTime;
+      const remaining = Math.ceil((LOCKOUT_DURATION - elapsed) / 1000);
+      
+      if (remaining > 0) {
+        setRemainingTime(remaining);
+        setTimeout(updateTimer, 1000);
+      } else {
+        resetFailedAttempts();
+      }
+    };
+
+    updateTimer();
+  };
+
+  // Check lockout status on mount
+  React.useEffect(() => {
+    checkLockoutStatus();
+  }, []);
 
   // --- HELPERS ---
   const validateEmail = (email: string): boolean => {
@@ -79,6 +153,16 @@ export default function LogIn() {
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>): Promise<void> => {
     if (e) e.preventDefault();
 
+    // Check if account is locked out
+    if (checkLockoutStatus()) {
+      const minutes = Math.floor(remainingTime / 60);
+      const seconds = remainingTime % 60;
+      setErrors({ 
+        general: `Too many failed attempts. Please try again in ${minutes}:${seconds.toString().padStart(2, '0')}` 
+      });
+      return;
+    }
+
     const newErrors: { [key: string]: string } = {};
 
     if (!email) newErrors.email = 'Email is required';
@@ -99,9 +183,25 @@ export default function LogIn() {
 
     if (error) {
       console.error("Login error:", error.message);
-      setErrors({ general: error.message });
+      incrementFailedAttempts();
+      const attemptsLeft = MAX_ATTEMPTS - getFailedAttempts();
+      
+      if (attemptsLeft > 0) {
+        setErrors({ 
+          general: `${error.message}. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining before temporary lockout.` 
+        });
+      } else {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        setErrors({ 
+          general: `Account temporarily locked due to multiple failed attempts. Try again in ${minutes}:${seconds.toString().padStart(2, '0')}` 
+        });
+      }
       return;
     }
+
+    // Success - reset failed attempts
+    resetFailedAttempts();
 
     // B. Check if they need MFA
     const { data: mfaData, error: mfaError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
@@ -218,11 +318,13 @@ export default function LogIn() {
 
           <button
             type="submit"
-            className="w-full py-3 rounded-full text-white font-bold text-lg mb-6 
+            disabled={isLockedOut}
+            className={`w-full py-3 rounded-full text-white font-bold text-lg mb-6 
                        bg-gradient-to-b from-[#1D5D95] to-[#004689]
-                       hover:scale-[1.02] transition-transform shadow-lg active:scale-95"
+                       hover:scale-[1.02] transition-transform shadow-lg active:scale-95
+                       ${isLockedOut ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''}`}
           >
-            Log In
+            {isLockedOut ? `Locked (${Math.floor(remainingTime / 60)}:${(remainingTime % 60).toString().padStart(2, '0')})` : 'Log In'}
           </button>
 
           <p className="text-center text-[#012243] text-[18px]">

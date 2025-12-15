@@ -28,6 +28,7 @@ export default function CollegesContainer() {
       logoUrl: college.logo_url,
       headerImageUrl: college.header_image_url ?? '/default-header.jpg',
       admissionsUrl: college.admissions_url ?? '#',
+      official_link: college.official_link ?? college.officialLink ?? '#',
       status: (college.application_status ?? 'open').toLowerCase(),
       entranceExam: {
         examName: college.exam_name ?? '',
@@ -101,9 +102,64 @@ export default function CollegesContainer() {
     return matchesAddress && matchesUniversity;
   });
 
+  // Most popular universities
+  const popularUniversityNames = [
+    'university of the philippines',
+    'polytechnic university of the philippines',
+    'ateneo de manila university',
+    'university of santo tomas',
+    'mapua university',
+    'de la salle university'
+  ];
+
+  const popularColleges = colleges.filter((college) => 
+    popularUniversityNames.some(name => 
+      college.name.toLowerCase().includes(name)
+    )
+  );
+
+  // Filter out popular colleges from the main list to avoid duplicates
+  const otherColleges = filteredColleges.filter((college) => 
+    !popularUniversityNames.some(name => 
+      college.name.toLowerCase().includes(name)
+    )
+  );
+
   return (
     <div className="py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-24">
-      {/* Header positioned above the grid */}
+      {/* Most Popular Universities Section */}
+      {popularColleges.length > 0 && (
+        <div className="mb-16">
+          <div className="max-w-[1450px] mx-auto mb-6 px-2 flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: '#1D5D95' }}>
+              Most popular universities now
+            </h2>
+            <p className="text-sm sm:text-base text-gray-500">
+              Last updated as of December 4, 2025
+            </p>
+          </div>
+          <div className="max-w-[1450px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
+            {popularColleges.map((college: any) => (
+              <div key={college.id} className="flex justify-center lg:justify-start">
+                <CollegeCard
+                  collegeId={college.id}
+                  universityName={college.name}
+                  address={college.address}
+                  applicationStart={college.application_start}
+                  applicationEnd={college.application_end}
+                  universityType={college.university_type}
+                  tuitionFee={college.tuition_fee}
+                  logoUrl={college.logo_url}
+                  status={(college.application_status)}
+                  onClick={() => handleCardClick(college)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Top Recommended Universities Section */}
       <div className="max-w-[1450px] mx-auto mb-6 px-2">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: '#1D5D95' }}>
           Top recommended universities for you
@@ -120,7 +176,7 @@ export default function CollegesContainer() {
 
       {/* College Cards Grid */}
       <div className="max-w-[1450px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
-        {filteredColleges.map((college: any) => (
+        {otherColleges.map((college: any) => (
           <div key={college.id} className="flex justify-center lg:justify-start">
             <CollegeCard
               collegeId={college.id}

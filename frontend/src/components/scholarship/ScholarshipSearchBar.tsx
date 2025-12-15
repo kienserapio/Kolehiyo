@@ -117,10 +117,12 @@ const ScholarshipSearchBar = () => {
           <input
             type="text"
             placeholder="Anywhere"
-            className="outline-none bg-transparent w-full text-base lg:text-lg placeholder:text-gray-500"
             value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
-            onClick={(e) => e.stopPropagation()}
+            readOnly
+            aria-haspopup="listbox"
+            aria-expanded={showLocationDropdown}
+            className="outline-none bg-transparent w-full text-base lg:text-lg placeholder:text-gray-500 cursor-pointer"
+            onClick={(e) => { e.stopPropagation(); setShowLocationDropdown(!showLocationDropdown); }}
           />
         </div>
         {showLocationDropdown && (

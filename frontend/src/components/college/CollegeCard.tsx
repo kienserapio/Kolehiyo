@@ -133,7 +133,7 @@ const CollegeCard: React.FC<CollegeCardProps> = ({
               className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain"
             />
           ) : (
-            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 bg-gray-200 rounded-full flex items-center justify-center">
               <span className="text-gray-400 text-xs">No Logo</span>
             </div>
           )}

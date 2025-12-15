@@ -60,14 +60,14 @@ export default function ScholarshipContainer() {
   return (
     <div className="py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-24">
       {/* Header */}
-      <div className="max-w-[1450px] mx-auto mb-6 px-2">
-        <h2
-          className="text-xl sm:text-2xl md:text-3xl font-bold"
-          style={{ color: "#1D5D95" }}
-        >
-          Top recommended scholarships for you
-        </h2>
-      </div>
+          <div className="max-w-[1450px] mx-auto mb-6 px-2 flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold" style={{ color: '#1D5D95' }}>
+              Top recommended scholarships for you
+            </h2>
+            <p className="text-sm sm:text-base text-gray-500">
+              Last updated as of December 4, 2025
+            </p>
+          </div>
 
       {/* {loading && <div className="text-center py-8">Loading scholarships...</div>} */}
       {error && <div className="text-center py-8 text-red-500">{error}</div>}

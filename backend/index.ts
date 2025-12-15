@@ -10,6 +10,7 @@ import healthRouter from './src/api/health';
 import scholarshipRoutes, { registerScholarshipRoutes } from './src/routes/scholarshipRoutes';
 import collegeRoutes, { registerCollegeRoutes } from './src/routes/collegeRoutes';
 import errorHandler from './src/middleware/errorHandler';
+import { startCron } from './src/utils/cron';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,6 +39,9 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
+    
+    // Start cron job to keep Render server alive
+    startCron();
 });
 
 export default app;

@@ -99,39 +99,39 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 </p>
               </div>
 
-              {/* 3. New MFA Button */}
-              <button
-                onClick={() => navigate("/auth/enable_mfa")}
-                className="mt-2 font-bold text-white rounded-full transition-opacity hover:opacity-90 
-                           text-[11px] sm:text-[13px] md:text-base 
-                           p-2 sm:p-2.5 md:p-3 
-                           active:opacity-70
-                           w-full sm:w-[130px] md:w-[155px]
-                           h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
-                style={{
-                  // Using a slightly different gradient (Grey/Dark) to differentiate from Sign Out
-                  background: 'linear-gradient(180deg, #4B5563 0%, #1F2937 100%)' 
-                }}
-              >
-                Enable MFA
-              </button>
-            </div>
+              {/* Buttons: stacked on mobile, side-by-side on desktop */}
+              <div className="w-full flex flex-col md:flex-row items-center md:justify-center gap-3 mt-2">
+                <button
+                  onClick={() => navigate("/auth/enable_mfa")}
+                  className="font-bold text-white rounded-full transition-opacity hover:opacity-90 
+                             text-[11px] sm:text-[13px] md:text-base 
+                             p-2 sm:p-2.5 md:p-3 
+                             active:opacity-70
+                             w-full sm:w-[130px] md:w-[155px]
+                             h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
+                  style={{
+                    background: 'linear-gradient(180deg, #4B5563 0%, #1F2937 100%)'
+                  }}
+                >
+                  Enable MFA
+                </button>
 
-            {/* Sign Out Button */}
-            <button
-              onClick={onSignOut}
-              className="font-bold text-white rounded-full transition-opacity hover:opacity-90 
-                           text-[11px] sm:text-[13px] md:text-base 
-                           p-2 sm:p-2.5 md:p-3 
-                           active:opacity-70
-                           w-[103px] sm:w-[130px] md:w-[155px]
-                           h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
-              style={{
-                background: 'linear-gradient(180deg, #1D5D95 0%, #004689 100%)'
-              }}
-            >
-              Sign Out
-            </button>
+                <button
+                  onClick={onSignOut}
+                  className="font-bold text-white rounded-full transition-opacity hover:opacity-90 
+                             text-[11px] sm:text-[13px] md:text-base 
+                             p-2 sm:p-2.5 md:p-3 
+                             active:opacity-70
+                             w-full sm:w-[130px] md:w-[155px]
+                             h-[30px] sm:h-[37px] md:h-[45px] cursor-pointer"
+                  style={{
+                    background: 'linear-gradient(180deg, #1D5D95 0%, #004689 100%)'
+                  }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
